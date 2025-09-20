@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Stitch Design</title>
+<link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
+<link as="style" href="https://fonts.googleapis.com/css2?display=swap&amp;family=Inter:wght@400;500;700;900&amp;family=Noto+Sans:wght@400;500;700;900" onload="this.rel='stylesheet'" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: {
+                        display: ["Inter"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.25rem",
+                        lg: "0.5rem",
+                        xl: "0.75rem",
+                        full: "9999px",
+                    },
+                },
+            },
+        };
+    </script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display">
+<div class="relative flex h-auto min-h-screen w-full flex-col">
+<div class="flex h-full grow flex-row">
+<aside class="flex h-full flex-col w-64 bg-white dark:bg-background-dark border-r border-gray-200 dark:border-gray-700">
+<div class="flex flex-col gap-4 p-4">
+<h1 class="text-xl font-bold text-gray-900 dark:text-white">Admin Panel</h1>
+<nav class="flex flex-col gap-2">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-sm font-medium">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="text-sm font-medium">Users</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-sm font-medium">Settings</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/10 text-primary dark:bg-primary/20" href="#">
+<span class="material-symbols-outlined">monitoring</span>
+<span class="text-sm font-medium">Activity</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300" href="#">
+<span class="material-symbols-outlined">credit_card</span>
+<span class="text-sm font-medium">Credits</span>
+</a>
+</nav>
+</div>
+</aside>
+<main class="flex-1 overflow-x-hidden">
+<div class="p-6">
+<h1 class="text-3xl font-bold text-gray-900 dark:text-white">Activity</h1>
+<div class="mt-8">
+<div class="border-b border-gray-200 dark:border-gray-700">
+<nav aria-label="Tabs" class="-mb-px flex space-x-8">
+<a class="border-primary text-primary whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm" href="#">Real-time Dashboard</a>
+<a class="border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300 dark:hover:border-gray-600 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm" href="#">Detailed Logs</a>
+<a class="border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300 dark:hover:border-gray-600 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm" href="#">Error Reporting</a>
+</nav>
+</div>
+</div>
+<div class="mt-8">
+<h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Real-time Activity Dashboard</h2>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<div class="bg-white dark:bg-background-dark p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+<h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">Ongoing Tasks</h3>
+<p class="mt-2 text-3xl font-semibold text-gray-900 dark:text-white">3</p>
+<div class="mt-4 space-y-2 text-sm">
+<p class="text-gray-700 dark:text-gray-300">Generating 500 contacts for Salesforce...</p>
+<p class="text-gray-700 dark:text-gray-300">Generating 1000 leads for HubSpot...</p>
+<p class="text-gray-700 dark:text-gray-300">Generating 250 accounts for Pipedrive...</p>
+</div>
+</div>
+<div class="bg-white dark:bg-background-dark p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+<h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">Active Users</h3>
+<div class="flex justify-between items-baseline mt-2">
+<p class="text-3xl font-semibold text-gray-900 dark:text-white">25</p>
+<div class="flex gap-2 text-xs">
+<span class="text-green-600 dark:text-green-400">Daily: +5%</span>
+<span class="text-green-600 dark:text-green-400">Weekly: +2%</span>
+<span class="text-red-600 dark:text-red-400">Monthly: -1%</span>
+</div>
+</div>
+</div>
+<div class="bg-white dark:bg-background-dark p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+<h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">Error Rate Trend</h3>
+<div class="h-24"><canvas id="errorRateChart"></canvas></div>
+</div>
+</div>
+<div class="mt-6 bg-white dark:bg-background-dark p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+<div class="flex justify-between items-center mb-4">
+<h3 class="text-lg font-medium text-gray-900 dark:text-white">Records Generated Over Time</h3>
+<div class="flex gap-2">
+<select class="text-sm rounded-md border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+<option>All Users</option>
+<option>Liam Harper</option>
+<option>Olivia Bennett</option>
+</select>
+<select class="text-sm rounded-md border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+<option>All CRM Types</option>
+<option>Salesforce</option>
+<option>HubSpot</option>
+</select>
+</div>
+</div>
+<div class="h-64"><canvas id="recordsGeneratedChart"></canvas></div>
+</div>
+</div>
+<div class="mt-8">
+<h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Detailed Logs (Audit Trail)</h2>
+<div class="bg-white dark:bg-background-dark rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+<div class="p-4 flex flex-wrap gap-4 items-center">
+<input class="flex-grow bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary focus:border-primary p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" placeholder="Filter by user, event, details..." type="text"/>
+<select class="text-sm rounded-md border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+<option>All Event Types</option>
+<option>User Login</option>
+<option>CRM Connection Deleted</option>
+<option>User Role Changed</option>
+<option>Data Generation</option>
+</select>
+<select class="text-sm rounded-md border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+<option>All Statuses</option>
+<option>Success</option>
+<option>Failed</option>
+<option>In Progress</option>
+</select>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+<thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+<tr>
+<th class="px-6 py-3" scope="col">Timestamp</th>
+<th class="px-6 py-3" scope="col">User</th>
+<th class="px-6 py-3" scope="col">Event Type</th>
+<th class="px-6 py-3" scope="col">Details</th>
+<th class="px-6 py-3" scope="col">IP Address</th>
+<th class="px-6 py-3" scope="col">Status</th>
+</tr>
+</thead>
+<tbody>
+<tr class="bg-white dark:bg-background-dark border-b dark:border-gray-700">
+<td class="px-6 py-4">2024-03-15 10:00:12</td>
+<td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">Liam Harper</td>
+<td class="px-6 py-4">User Login</td>
+<td class="px-6 py-4">User logged in successfully</td>
+<td class="px-6 py-4">192.168.1.1</td>
+<td class="px-6 py-4"><span class="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">Success</span></td>
+</tr>
+<tr class="bg-white dark:bg-background-dark border-b dark:border-gray-700">
+<td class="px-6 py-4">2024-03-15 10:05:34</td>
+<td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">Olivia Bennett</td>
+<td class="px-6 py-4">Data Generation</td>
+<td class="px-6 py-4">Generated 500 records for Salesforce</td>
+<td class="px-6 py-4">203.0.113.25</td>
+<td class="px-6 py-4"><span class="px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300">In Progress</span></td>
+</tr>
+<tr class="bg-white dark:bg-background-dark border-b dark:border-gray-700">
+<td class="px-6 py-4">2024-03-15 10:10:45</td>
+<td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">System</td>
+<td class="px-6 py-4">CRM Connection Deleted</td>
+<td class="px-6 py-4">HubSpot connection for Noah Carter deleted</td>
+<td class="px-6 py-4">N/A</td>
+<td class="px-6 py-4"><span class="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">Success</span></td>
+</tr>
+<tr class="bg-white dark:bg-background-dark border-b dark:border-gray-700">
+<td class="px-6 py-4">2024-03-15 10:15:22</td>
+<td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">Noah Carter</td>
+<td class="px-6 py-4">Data Generation</td>
+<td class="px-6 py-4">Failed to generate records for Pipedrive</td>
+<td class="px-6 py-4">198.51.100.3</td>
+<td class="px-6 py-4">
+<a class="font-medium text-red-600 dark:text-red-500 hover:underline" href="#">
+<span class="px-2 py-1 text-xs font-medium rounded-full bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300">Failed</span>
+</a>
+</td>
+</tr>
+<tr class="bg-white dark:bg-background-dark">
+<td class="px-6 py-4">2024-03-15 10:20:01</td>
+<td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">Liam Harper</td>
+<td class="px-6 py-4">User Role Changed</td>
+<td class="px-6 py-4">Changed role of Ava Mitchell to Admin</td>
+<td class="px-6 py-4">192.168.1.1</td>
+<td class="px-6 py-4"><span class="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">Success</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="mt-8 hidden" id="error-reporting-view">
+<h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Error Details</h2>
+<div class="bg-white dark:bg-background-dark p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+<h3 class="text-lg font-medium text-gray-900 dark:text-white">Job ID: 789123</h3>
+<div class="mt-4 grid grid-cols-2 gap-4 text-sm">
+<div><span class="font-medium text-gray-500 dark:text-gray-400">Timestamp:</span> 2024-03-15 10:15:22</div>
+<div><span class="font-medium text-gray-500 dark:text-gray-400">User:</span> Noah Carter</div>
+<div><span class="font-medium text-gray-500 dark:text-gray-400">CRM:</span> Pipedrive</div>
+<div><span class="font-medium text-gray-500 dark:text-gray-400">IP Address:</span> 198.51.100.3</div>
+</div>
+<div class="mt-4">
+<h4 class="text-md font-medium text-gray-900 dark:text-white">CRM API Error Message:</h4>
+<pre class="mt-2 p-4 bg-gray-100 dark:bg-gray-800 rounded-md text-sm text-red-600 dark:text-red-400 overflow-x-auto"><code>API_ERROR: Invalid authentication credentials. Please check your API key. (Error Code: 401)</code></pre>
+</div>
+<button class="mt-4 px-4 py-2 text-sm font-medium text-gray-900 bg-gray-100 rounded-lg hover:bg-gray-200 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600">Back to Logs</button>
+</div>
+</div>
+</div>
+</main>
+</div>
+</div>
+<script>
+        const errorRateCtx = document.getElementById('errorRateChart').getContext('2d');
+        new Chart(errorRateCtx, {
+            type: 'line',
+            data: {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                datasets: [{
+                    label: 'Error Rate',
+                    data: [1.2, 0.8, 1.5, 1.1, 2.0, 1.8, 1.6],
+                    borderColor: 'rgb(239, 68, 68)',
+                    tension: 0.1,
+                    pointRadius: 0,
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return value + '%'
+                            }
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+        const recordsGeneratedCtx = document.getElementById('recordsGeneratedChart').getContext('2d');
+        new Chart(recordsGeneratedCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+                datasets: [{
+                    label: 'Records Generated',
+                    data: [1200, 1900, 3000, 5000, 2300, 4200, 3500],
+                    backgroundColor: 'rgba(19, 127, 236, 0.6)',
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+        // Simple tab and view switching logic
+        document.addEventListener('DOMContentLoaded', () => {
+            const tabs = document.querySelectorAll('[aria-label="Tabs"] a');
+            const logTable = document.querySelector('.mt-8:has(table)');
+            const errorView = document.getElementById('error-reporting-view');
+            const failedStatusLinks = document.querySelectorAll('a:has(span.bg-red-100)');
+            const backToLogsButton = errorView.querySelector('button');
+            failedStatusLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    logTable.classList.add('hidden');
+                    errorView.classList.remove('hidden');
+                });
+            });
+            backToLogsButton.addEventListener('click', () => {
+                errorView.classList.add('hidden');
+                logTable.classList.remove('hidden');
+            });
+        });
+    </script>
+
+</body></html>

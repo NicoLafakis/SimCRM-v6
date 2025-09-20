@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Stitch Design</title>
+<link href="data:image/x-icon;base64," rel="icon" type="image/x-icon"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#137fec",
+              "background-light": "#f6f7f8",
+              "background-dark": "#101922",
+            },
+            fontFamily: {
+              display: ["Inter"],
+            },
+            borderRadius: {
+              DEFAULT: "0.25rem",
+              lg: "0.5rem",
+              xl: "0.75rem",
+              full: "9999px",
+            },
+          },
+        },
+      };
+    </script>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark">
+<div class="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden">
+<header class="flex items-center justify-between whitespace-nowrap border-b border-primary/20 dark:border-primary/30 px-10 py-3">
+<div class="flex items-center gap-4 text-slate-800 dark:text-white">
+<div class="text-primary">
+<svg class="h-8 w-8" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M12.0001 1.50012C12.4468 1.50012 12.8306 1.74563 12.9926 2.14088L19.4926 18.1409C19.7028 18.6366 19.3499 19.1873 18.8203 19.294L12.3203 20.794C12.1158 20.8427 11.8844 20.8427 11.6799 20.794L5.17988 19.294C4.65026 19.1873 4.29743 18.6366 4.50761 18.1409L11.0076 2.14088C11.1696 1.74563 11.5534 1.50012 12.0001 1.50012ZM12.0001 4.2145L6.78534 17.5001L12.0001 18.7188L17.2149 17.5001L12.0001 4.2145Z"></path>
+</svg>
+</div>
+<h2 class="text-lg font-bold">DataForge</h2>
+</div>
+<div class="flex flex-1 justify-end gap-2">
+<nav class="flex items-center gap-2">
+<a class="px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-primary/10 dark:hover:bg-primary/20 rounded" href="#">Dashboard</a>
+<a class="px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-primary/10 dark:hover:bg-primary/20 rounded" href="#">Templates</a>
+<a class="px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-primary/10 dark:hover:bg-primary/20 rounded" href="#">Sets</a>
+<a class="px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-primary/10 dark:hover:bg-primary/20 rounded" href="#">Settings</a>
+</nav>
+<div class="flex items-center gap-4 pl-6">
+<button class="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-background-light dark:bg-background-dark hover:bg-primary/10 dark:hover:bg-primary/20 text-slate-600 dark:text-slate-300">
+<span class="material-symbols-outlined"> help </span>
+</button>
+<div class="h-10 w-10 rounded-full bg-cover bg-center bg-no-repeat" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCS2vF-1dyv_Qsk5TdLbZZqFpbm5ccAeUXb67YrlMhUYH2FvxETRBXK7HcyqxZ7fNwmnLoWvFX_Bix-F12lkTbTyNq1sJobXg5GFFxzbZUvF1Zz2wASeW8vPJUvtdredlo2s7nAqq7V6oaVOUCfN4RJ8SeUtwn2Tu8nuu7jsw3oXUIh8yldlzh6Rk5K5kx4KOIjGd7WUJ-Cm_j3DqzfejzyCXmlerzobRn8QvOq1s5YNYh35E8dHwob3tsnh1xy22ylw0nnotYA7SM");'></div>
+</div>
+</div>
+</header>
+<main class="flex flex-1 justify-center py-10 px-4 sm:px-6 lg:px-8">
+<div class="w-full max-w-6xl">
+<div class="mb-8">
+<h1 class="text-3xl font-bold text-slate-900 dark:text-white">Property Configuration</h1>
+<p class="mt-2 text-slate-600 dark:text-slate-300">
+                    Select and configure the properties to be included for each object type. The available properties are fetched live from your connected CRM.
+                </p>
+</div>
+<div class="mb-8">
+<div class="border-b border-primary/20 dark:border-primary/30">
+<nav aria-label="Tabs" class="-mb-px flex space-x-8">
+<a class="border-primary text-primary whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm" href="#">Customers</a>
+<a class="border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:border-slate-300 dark:hover:border-slate-600 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm" href="#">Companies</a>
+<a class="border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:border-slate-300 dark:hover:border-slate-600 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm" href="#">Deals</a>
+</nav>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+<div class="rounded-lg border border-primary/20 dark:border-primary/30 p-6">
+<h2 class="text-xl font-bold text-slate-900 dark:text-white mb-4">Available Properties</h2>
+<div class="relative mb-4">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"> search </span>
+<input class="form-input w-full rounded border-primary/30 bg-background-light dark:bg-background-dark text-slate-900 dark:text-white focus:border-primary focus:ring-0 pl-10" placeholder="Search properties" type="text"/>
+</div>
+<div class="space-y-3 h-96 overflow-y-auto pr-2">
+<div class="flex items-center justify-between p-3 rounded-md bg-background-light dark:bg-background-dark hover:bg-primary/5 dark:hover:bg-primary/10">
+<div>
+<p class="font-medium text-slate-800 dark:text-slate-200">First Name</p>
+<p class="text-xs text-slate-500 dark:text-slate-400">Standard Property</p>
+</div>
+<button class="flex items-center justify-center h-8 w-8 rounded-full text-slate-500 hover:bg-primary/20 hover:text-primary dark:text-slate-400 dark:hover:text-primary">
+<span class="material-symbols-outlined">add</span>
+</button>
+</div>
+<div class="flex items-center justify-between p-3 rounded-md bg-background-light dark:bg-background-dark hover:bg-primary/5 dark:hover:bg-primary/10">
+<div>
+<p class="font-medium text-slate-800 dark:text-slate-200">Last Name</p>
+<p class="text-xs text-slate-500 dark:text-slate-400">Standard Property</p>
+</div>
+<button class="flex items-center justify-center h-8 w-8 rounded-full text-slate-500 hover:bg-primary/20 hover:text-primary dark:text-slate-400 dark:hover:text-primary">
+<span class="material-symbols-outlined">add</span>
+</button>
+</div>
+<div class="flex items-center justify-between p-3 rounded-md bg-background-light dark:bg-background-dark hover:bg-primary/5 dark:hover:bg-primary/10">
+<div>
+<p class="font-medium text-slate-800 dark:text-slate-200">Email</p>
+<p class="text-xs text-slate-500 dark:text-slate-400">Standard Property</p>
+</div>
+<button class="flex items-center justify-center h-8 w-8 rounded-full text-slate-500 hover:bg-primary/20 hover:text-primary dark:text-slate-400 dark:hover:text-primary">
+<span class="material-symbols-outlined">add</span>
+</button>
+</div>
+<div class="flex items-center justify-center py-8">
+<div class="flex items-center gap-2 text-slate-500 dark:text-slate-400">
+<svg class="animate-spin h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+<path class="opacity-75" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" fill="currentColor"></path>
+</svg>
+<span>Loading properties...</span>
+</div>
+</div>
+<div class="flex items-center justify-between p-3 rounded-md bg-background-light dark:bg-background-dark hover:bg-primary/5 dark:hover:bg-primary/10">
+<div>
+<p class="font-medium text-slate-800 dark:text-slate-200">Lead Source</p>
+<p class="text-xs text-slate-500 dark:text-slate-400">Custom Property</p>
+</div>
+<button class="flex items-center justify-center h-8 w-8 rounded-full text-slate-500 hover:bg-primary/20 hover:text-primary dark:text-slate-400 dark:hover:text-primary">
+<span class="material-symbols-outlined">add</span>
+</button>
+</div>
+</div>
+</div>
+<div class="rounded-lg border border-primary/20 dark:border-primary/30 p-6">
+<h2 class="text-xl font-bold text-slate-900 dark:text-white mb-4">Selected Properties to Generate</h2>
+<div class="space-y-3 h-96 overflow-y-auto pr-2">
+<div class="rounded-md bg-primary/10 dark:bg-primary/20 cursor-move">
+<div class="flex items-center justify-between p-3">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-slate-500 dark:text-slate-400">drag_indicator</span>
+<div>
+<p class="font-medium text-slate-800 dark:text-slate-200">First Name</p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="flex items-center justify-center h-8 w-8 rounded-full text-slate-500 hover:bg-primary/20 hover:text-primary dark:text-slate-400 dark:hover:text-primary">
+<span class="material-symbols-outlined text-base">settings</span>
+</button>
+<button class="flex items-center justify-center h-8 w-8 rounded-full text-slate-500 hover:bg-red-500/20 hover:text-red-500 dark:text-slate-400 dark:hover:text-red-500">
+<span class="material-symbols-outlined text-base">close</span>
+</button>
+</div>
+</div>
+</div>
+<div class="rounded-md bg-primary/10 dark:bg-primary/20 cursor-move">
+<div class="flex items-center justify-between p-3">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-slate-500 dark:text-slate-400">drag_indicator</span>
+<div>
+<p class="font-medium text-slate-800 dark:text-slate-200">Last Name</p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="flex items-center justify-center h-8 w-8 rounded-full text-slate-500 hover:bg-primary/20 hover:text-primary dark:text-slate-400 dark:hover:text-primary">
+<span class="material-symbols-outlined text-base">settings</span>
+</button>
+<button class="flex items-center justify-center h-8 w-8 rounded-full text-slate-500 hover:bg-red-500/20 hover:text-red-500 dark:text-slate-400 dark:hover:text-red-500">
+<span class="material-symbols-outlined text-base">close</span>
+</button>
+</div>
+</div>
+</div>
+<div class="rounded-md bg-primary/10 dark:bg-primary/20 cursor-move">
+<div class="flex items-center justify-between p-3">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-slate-500 dark:text-slate-400">drag_indicator</span>
+<div>
+<p class="font-medium text-slate-800 dark:text-slate-200">Email</p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="flex items-center justify-center h-8 w-8 rounded-full text-slate-500 hover:bg-primary/20 hover:text-primary dark:text-slate-400 dark:hover:text-primary">
+<span class="material-symbols-outlined text-base">settings</span>
+</button>
+<button class="flex items-center justify-center h-8 w-8 rounded-full text-slate-500 hover:bg-red-500/20 hover:text-red-500 dark:text-slate-400 dark:hover:text-red-500">
+<span class="material-symbols-outlined text-base">close</span>
+</button>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-center h-full border-2 border-dashed border-primary/30 rounded-lg">
+<div class="text-center text-slate-500 dark:text-slate-400">
+<span class="material-symbols-outlined text-4xl">move_down</span>
+<p>Drag properties here or use the '+' button</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-12 flex justify-end">
+<button class="flex items-center justify-center rounded bg-primary px-6 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-primary/80">
+                    Save Configuration
+                </button>
+</div>
+</div>
+</main>
+</div>
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+<div class="w-full max-w-2xl rounded-xl bg-background-light dark:bg-background-dark border border-primary/20 dark:border-primary/30 shadow-2xl">
+<div class="flex items-center justify-between border-b border-primary/20 dark:border-primary/30 p-6">
+<h2 class="text-2xl font-bold text-slate-900 dark:text-white">Configure: <span class="text-primary">Lead Source</span></h2>
+<button class="flex h-8 w-8 items-center justify-center rounded-full text-slate-500 hover:bg-slate-200 dark:text-slate-400 dark:hover:bg-slate-700">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<div class="p-6 space-y-6 max-h-[70vh] overflow-y-auto">
+<div class="space-y-4">
+<label class="block text-sm font-medium text-slate-700 dark:text-slate-300" for="generationType">Generation Type</label>
+<select class="form-select w-full rounded border-primary/30 bg-background-light dark:bg-background-dark text-slate-900 dark:text-white focus:border-primary focus:ring-primary" id="generationType">
+<option>Random from List</option>
+<option>Random Number</option>
+<option>Random Date</option>
+<option>Email Address</option>
+<option>Full Name</option>
+</select>
+</div>
+<div class="space-y-4">
+<h3 class="text-lg font-semibold text-slate-800 dark:text-slate-200">Picklist Options</h3>
+<p class="text-sm text-slate-500 dark:text-slate-400">Values are fetched from your CRM. Uncheck any values you wish to exclude from generation.</p>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"> search </span>
+<input class="form-input w-full rounded border-primary/30 bg-background-light dark:bg-background-dark text-slate-900 dark:text-white focus:border-primary focus:ring-0 pl-10" placeholder="Search options" type="text"/>
+</div>
+<div class="space-y-3 h-48 overflow-y-auto border border-primary/20 dark:border-primary/30 rounded-lg p-3">
+<label class="flex items-center gap-3 p-2 rounded-md hover:bg-primary/5 dark:hover:bg-primary/10">
+<input checked="" class="form-checkbox rounded text-primary focus:ring-primary" type="checkbox"/>
+<span class="text-slate-800 dark:text-slate-200">Advertisement</span>
+</label>
+<label class="flex items-center gap-3 p-2 rounded-md hover:bg-primary/5 dark:hover:bg-primary/10">
+<input checked="" class="form-checkbox rounded text-primary focus:ring-primary" type="checkbox"/>
+<span class="text-slate-800 dark:text-slate-200">Webinar</span>
+</label>
+<label class="flex items-center gap-3 p-2 rounded-md hover:bg-primary/5 dark:hover:bg-primary/10">
+<input checked="" class="form-checkbox rounded text-primary focus:ring-primary" type="checkbox"/>
+<span class="text-slate-800 dark:text-slate-200">Trade Show</span>
+</label>
+<label class="flex items-center gap-3 p-2 rounded-md hover:bg-primary/5 dark:hover:bg-primary/10">
+<input class="form-checkbox rounded text-primary focus:ring-primary" type="checkbox"/>
+<span class="text-slate-800 dark:text-slate-200">Referral</span>
+</label>
+<label class="flex items-center gap-3 p-2 rounded-md hover:bg-primary/5 dark:hover:bg-primary/10">
+<input checked="" class="form-checkbox rounded text-primary focus:ring-primary" type="checkbox"/>
+<span class="text-slate-800 dark:text-slate-200">Partner</span>
+</label>
+<label class="flex items-center gap-3 p-2 rounded-md hover:bg-primary/5 dark:hover:bg-primary/10">
+<input checked="" class="form-checkbox rounded text-primary focus:ring-primary" type="checkbox"/>
+<span class="text-slate-800 dark:text-slate-200">Cold Call</span>
+</label>
+</div>
+</div>
+</div>
+<div class="flex justify-end gap-4 p-6 border-t border-primary/20 dark:border-primary/30">
+<button class="rounded px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700">Cancel</button>
+<button class="flex items-center justify-center rounded bg-primary px-6 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-primary/80">Apply Rules</button>
+</div>
+</div>
+</div>
+
+</body></html>
