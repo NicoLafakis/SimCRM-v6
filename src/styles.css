@@ -29,10 +29,10 @@ body { margin: 0; font-family: 'Press Start 2P', cursive; background-color: var(
 
 .landing {
 	position: relative;
-	height: 100%;
+	min-height: 100vh; /* ensure it can grow beyond viewport */
 	display: grid;
 	place-items: center;
-	overflow: hidden;
+	overflow: auto; /* allow scrolling when children exceed viewport */
 }
 
 /* Corner logo (shown on post-landing pages) */
@@ -105,6 +105,17 @@ body { margin: 0; font-family: 'Press Start 2P', cursive; background-color: var(
 .btn-signup { background: #1f8f4b; color: #fff }
 .btn-signup:hover { filter: brightness(1.05) }
 
+/* Passcode requirements list beneath Continue button */
+.pass-reqs { margin-top: 12px; text-align: left; max-width: 420px; }
+.pass-reqs ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px }
+.pass-reqs .req { font-size: 12px; padding: 8px 10px; border-radius: 6px; color: #fff; display: flex; align-items: center; gap: 8px }
+.pass-reqs .req::before { content: '\2716'; /* heavy cross */ display: inline-block; width: 18px; text-align: center; font-weight: bold }
+.pass-reqs .req.met { background: #006400; /* dark green */ }
+.pass-reqs .req.met::before { content: '\2714'; /* check */ }
+.pass-reqs .req.unmet { background: #5c0f1a; /* maroon */ }
+.pass-reqs .req { transition: background-color 220ms ease, transform 120ms ease }
+.pass-reqs .req.met { transform: translateY(-1px) }
+
 /* Top-right pill menu */
 .menu-pill {
 	position: fixed;
@@ -164,6 +175,29 @@ body { margin: 0; font-family: 'Press Start 2P', cursive; background-color: var(
 	text-align: center;
 	z-index: 3;
 }
+
+/* Back to top floating affordance */
+.back-to-top {
+	position: fixed;
+	right: 20px;
+	bottom: 76px; /* above footer */
+	width: 44px;
+	height: 44px;
+	border-radius: 8px;
+	background: #24323a;
+	color: #fff;
+	border: 2px solid rgba(255,255,255,0.06);
+	display: grid;
+	place-items: center;
+	cursor: pointer;
+	z-index: 40;
+	box-shadow: 0 6px 0 rgba(0,0,0,0.2);
+	transition: transform 160ms ease, opacity 160ms ease;
+	opacity: 0.98;
+	font-size: 18px;
+}
+.back-to-top:hover { transform: translateY(-2px) }
+
 
 /* Volume widget bottom-right */
 .vol-widget {
