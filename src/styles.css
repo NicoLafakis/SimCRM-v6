@@ -35,6 +35,56 @@ body { margin: 0; font-family: 'Press Start 2P', cursive; background-color: var(
 	overflow: hidden;
 }
 
+/* Auth page wrapper */
+.auth-wrap { display: grid; gap: 22px; place-items: center; z-index: 2 }
+
+/* Game Boy-like shell and screen */
+.gb-shell {
+	background: #6c7b7f; /* solid (no gradient) for pixel look */
+	border: 2px solid #3f3f44;
+	border-radius: 12px 12px 36px 12px; /* BR bevel 3x */
+	padding: 28px 72px; /* thicker left/right bezel (2x) */
+	box-shadow: 0 6px 0 rgba(0,0,0,0.2), 0 6px 28px rgba(0,0,0,0.18);
+}
+.gb-screen {
+	width: 390px; /* 25% narrower */
+	max-width: 86vw;
+	background: #99cf63;
+	border: 2px solid #2f3a2f; /* crisp pixel frame */
+	border-radius: 4px;
+	padding: 18px;
+	box-shadow: inset 0 0 0 6px rgba(0,0,0,0.12); /* inner bezel, no blur */
+	display: grid;
+	gap: 12px;
+}
+.gb-label { font-size: 12px; color: #21313a; opacity: 0.95 }
+.gb-input {
+	font-family: 'Press Start 2P', cursive;
+	font-size: 12px;
+	padding: 10px 12px;
+	color: #21313a;
+	background: rgba(255,255,255,0.35);
+	border: 1px solid #2f3a2f; /* thicker pixel edge */
+	border-radius: 4px;
+	outline: none;
+    margin-bottom: 15px;
+    margin-top:5px;
+}
+.gb-input::placeholder { color: rgba(33,49,58,0.6) }
+
+.auth-under { text-align: center; margin-top: 14px }
+.auth-forgot { color: #1a3b8d; text-decoration: none; font-size: 14px }
+.auth-forgot:hover { text-decoration: underline }
+
+.auth-actions { display: grid; gap: 16px; place-items: center; margin-top: 8px }
+.auth-or { color: #6c7b7f; font-size: 12px }
+.btn { font-family: 'Press Start 2P', cursive; font-size: 14px; padding: 10px 22px; border: 2px solid #24323a; border-radius: 6px; cursor: pointer; box-shadow: 0 6px 0 rgba(0,0,0,0.2), 0 10px 24px rgba(0,0,0,0.08); }
+.btn:active { transform: translateY(1px) }
+.btn-login { background: #a41f23; color: #fff }
+.btn-login:hover { filter: brightness(1.05) }
+.btn-signup { background: #1f8f4b; color: #fff }
+.btn-signup:hover { filter: brightness(1.05) }
+
 /* Top-right pill menu */
 .menu-pill {
 	position: fixed;

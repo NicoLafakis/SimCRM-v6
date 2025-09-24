@@ -1,9 +1,9 @@
 import React from 'react'
 import logoUrl from '../../assets/simcrm_no_background.png'
 
-export default function LandingPage() {
+export default function LandingPage({ onContinue }) {
   return (
-    <div className="landing" onClick={() => { /* click anywhere - placeholder */ }}>
+    <div className="landing" onClick={onContinue}>
       {/* Menu removed as requested */}
 
       {/* Center logo image and subtitle */}

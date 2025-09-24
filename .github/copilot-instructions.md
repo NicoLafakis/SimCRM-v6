@@ -71,6 +71,43 @@ test/                   - Simulation engine tests
 assets/                 - Images, icons, audio, manifest
 ```
 
+## Frontend UI Rules (Always Apply)
+
+These rules are mandatory for all new UI elements, pages, and frontend code. If a tradeoff is required, prioritize these over convenience. Deviations must be called out explicitly in reviews.
+
+### Color Palette (Hex)
+- Light Gray Background: `#e8e8e8`
+- Slate Gray Frame: `#6c7b7f`
+- Olive Green Screen: `#8fbc8f`
+- Sage Input Fields: `#9fb89f`
+- Dark Red Button: `#8b0000`
+- Dark Green Text: `#2d3e2d`
+- Navy Blue Title: `#1e3a5f`
+
+### Color Usage Guidelines
+- Light Gray (`#e8e8e8`): Main background, neutral areas
+- Slate Gray (`#6c7b7f`): Container borders, structural elements
+- Olive Green (`#8fbc8f`): Primary interface panels, hero sections
+- Sage (`#9fb89f`): Input fields, secondary panels
+- Dark Red (`#8b0000`): Primary action buttons, important CTAs
+- Dark Green (`#2d3e2d`): Text, labels, secondary actions
+- Navy Blue (`#1e3a5f`): Logo text, brand elements, headers
+
+### Typography
+- Primary font: Press Start 2P (global). Avoid mixing with other fonts unless required for accessibility.
+
+### Effects
+- Gradients: Avoid. If used, must be visibly pixel-stepped (no smooth interpolations).
+- Shadows: Allowed (hard drop shadows), avoid gaussian blurs for structural elements.
+- Corners: Prefer low radii; use asymmetric bevels only when specified by the design.
+
+### Components
+- Buttons: Use palette colors; thick borders (3–4px), slight drop shadow, no smooth gradients; text in white where specified.
+- Inputs: Sage background, dark green text, thick borders (3px), squared/pixel corners.
+- Screens/Panels: Slate frames with clear borders; if green “screen,” use Olive with crisp frame.
+
+See `.github/ui-rules.md` for extended guidance and examples.
+
 ## Integration Points
 
 ### HubSpot Objects
