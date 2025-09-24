@@ -1,34 +1,65 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import ScenarioSelectionPage from './pages/ScenarioSelectionPage'
+import LoginPage from './pages/LoginPage'
+import RegisterPage from './pages/RegisterPage'
+import MyAccountPage from './pages/MyAccountPage'
+import AdminDashboardPage from './pages/admin/AdminDashboardPage'
 import './App.css'
 
+type PageType = 'scenarios' | 'login' | 'register' | 'account' | 'admin'
+
 function App() {
-  const [count, setCount] = useState(0)
+  const [currentPage, setCurrentPage] = useState<PageType>('scenarios')
+
+  const renderPage = () => {
+    switch (currentPage) {
+      case 'scenarios':
+        return <ScenarioSelectionPage />
+      case 'login':
+        return <LoginPage />
+      case 'register':
+        return <RegisterPage />
+      case 'account':
+        return <MyAccountPage />
+      case 'admin':
+        return <AdminDashboardPage />
+      default:
+        return <ScenarioSelectionPage />
+    }
+  }
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
+    <div>
+      {/* Simple navigation for development */}
+      <div style={{ 
+        position: 'fixed', 
+        top: 0, 
+        right: 0, 
+        zIndex: 1000, 
+        background: '#000', 
+        color: '#fff', 
+        padding: '10px',
+        fontSize: '12px'
+      }}>
+        <strong>Dev Nav:</strong>{' '}
+        <button onClick={() => setCurrentPage('scenarios')} style={{ margin: '0 2px', color: currentPage === 'scenarios' ? '#3B82F6' : '#fff' }}>
+          Scenarios
         </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
+        <button onClick={() => setCurrentPage('login')} style={{ margin: '0 2px', color: currentPage === 'login' ? '#3B82F6' : '#fff' }}>
+          Login
+        </button>
+        <button onClick={() => setCurrentPage('register')} style={{ margin: '0 2px', color: currentPage === 'register' ? '#3B82F6' : '#fff' }}>
+          Register
+        </button>
+        <button onClick={() => setCurrentPage('account')} style={{ margin: '0 2px', color: currentPage === 'account' ? '#3B82F6' : '#fff' }}>
+          Account
+        </button>
+        <button onClick={() => setCurrentPage('admin')} style={{ margin: '0 2px', color: currentPage === 'admin' ? '#3B82F6' : '#fff' }}>
+          Admin
+        </button>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+      {renderPage()}
+    </div>
   )
 }
 
