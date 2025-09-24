@@ -12,11 +12,21 @@ SimCRM is a HubSpot CRM simulation tool with dual architecture: a React frontend
 - **Deal Flow**: Automatic deal creation for SQLs with probabilistic outcomes (60% win rate)
 - **Key Method**: `createContactWithCompany()` creates associated contact-company pairs with initial notes
 
+### Frontend UI (Landing Page)
+- **Component**: `src/components/LandingPage.jsx`
+- **Logo**: Uses the provided image `assets/simcrm_no_background.png` rendered as a single `<img>` centered on the page (`.logo-img`).
+	- Sizing is controlled via CSS in `src/styles.css` (currently `width: 100%` with `max-width: 900px`) for an elegant, responsive scale.
+- **CTA**: "Click anywhere to continue..." with a stop-motion fade at 12fps using `steps()` animation (`.cta { animation: cta-fade 1s steps(12, end) infinite alternate; }`).
+- **Removed Widgets**: The top-right menu pill and the bottom-right audio/volume widget were intentionally removed for a simpler landing.
+- **Footer**: Fixed footer bar (`.site-footer`) with navy background and text `©️2025 Black Maige. Game the simulation.`
+- **Typography**: Global font is Press Start 2P loaded in `index.html` via Google Fonts.
+
 ### Backend API (`server/`)
 - **Client Pattern**: `hubspotClient.js` provides retry logic with exponential backoff and rate limit handling
 - **Tool Pattern**: Each HubSpot object type has a dedicated tool module (`server/tools/hubspot/`) with CRUD operations
 - **Orchestrator Pattern**: High-level workflows in `orchestrator.js` handle multi-object operations and associations
 - **Association Management**: Centralized `associations.js` module with correct HubSpot v4 API type IDs and comprehensive association support
+	- Additional endpoints exposed in `server/index.js`: `POST /api/create-note`, `POST /api/create-call`, `POST /api/create-task` (best-effort associations applied; failures are logged and do not halt the workflow)
 
 ## Development Workflows
 
@@ -29,6 +39,12 @@ SimCRM is a HubSpot CRM simulation tool with dual architecture: a React frontend
 ### Environment Setup
 - Requires `HUBSPOT_API_TOKEN` in `.env` for server functionality
 - Server warns but continues without token (simulation works independently)
+
+### PWA & Meta
+- **Manifest**: `assets/site.webmanifest` includes non-empty `name`/`short_name` (`SimCRM`), `start_url` and `scope` set to `/`, and colors aligned to the UI grid background (`#f4f5f7`).
+- **Icons**: Manifest icons reference existing assets: `/assets/favicon-32x32.png`, `/assets/favicon-16x16.png`.
+- **Index wiring**: `index.html` links the manifest and favicons in the `<head>`, and includes an Apple touch icon link.
+- **Apple Touch Icon**: Linked in `index.html` via `<link rel="apple-touch-icon" href="/assets/simcrm_no_background.png">`. Replace with a dedicated 180x180 PNG if desired.
 
 ## Key Patterns
 
@@ -48,9 +64,11 @@ Uses prefixed sequential IDs: `genId('ct')` → `ct_1`, `ct_2`, etc. Pattern ens
 ### File Organization
 ```
 src/simulation/         - Frontend simulation logic
+src/components/         - Frontend UI components (landing page)
 server/tools/hubspot/   - HubSpot object CRUD operations
 server/                 - API orchestration and client
 test/                   - Simulation engine tests
+assets/                 - Images, icons, audio, manifest
 ```
 
 ## Integration Points
