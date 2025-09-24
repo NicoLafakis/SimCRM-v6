@@ -98,11 +98,15 @@ async function login({ identifier, passcode }) {
     const [rows] = await pool.query('SELECT * FROM dev_users WHERE playerNameId = ? OR emailId = ? LIMIT 1', [id, id])
     if (!rows || !rows.length) return { ok: false }
     const user = rows[0]
-    const salt = user.cred_salt
-    const hash = user.cred_hash
-    const verify = crypto.scryptSync(passcode, salt, 64).toString('hex')
-    const ok = crypto.timingSafeEqual(Buffer.from(hash, 'hex'), Buffer.from(verify, 'hex'))
-    return ok ? { ok: true, id: user.id, playerName: user.playerName, email: user.email } : { ok: false }
+    try {
+      const salt = user.cred_salt
+      const hash = user.cred_hash
+      const verify = crypto.scryptSync(passcode, salt, 64).toString('hex')
+      const ok = crypto.timingSafeEqual(Buffer.from(hash, 'hex'), Buffer.from(verify, 'hex'))
+      return ok ? { ok: true, id: user.id, playerName: user.playerName, email: user.email } : { ok: false }
+    } catch (e) {
+      return { ok: false }
+    }
   }
 
   const db = await loadDBFile()
@@ -114,4 +118,25 @@ async function login({ identifier, passcode }) {
   return ok ? { ok: true, id: user.id, playerName: user.playerName, email: user.email } : { ok: false }
 }
 
-module.exports = { signup, login }
+// Admin helpers (dev only)
+async function listUsers() {
+  if (pool) {
+    await ensureUsersTable()
+    const [rows] = await pool.query('SELECT id, playerName, email, companyName, createdAt FROM dev_users')
+    return rows
+  }
+  const db = await loadDBFile()
+  return db.users.map(u => ({ id: u.id, playerName: u.playerName, email: u.email, companyName: u.companyName, createdAt: u.createdAt }))
+}
+
+async function resetUsers() {
+  if (pool) {
+    await ensureUsersTable()
+    await pool.query('DELETE FROM dev_users')
+    return true
+  }
+  await saveDBFile({ users: [] })
+  return true
+}
+
+module.exports = { signup, login, listUsers, resetUsers }

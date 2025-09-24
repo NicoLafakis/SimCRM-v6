@@ -84,6 +84,25 @@ try {
       res.status(400).json({ ok: false, error: e.message })
     }
   })
+
+  // Dev-only admin endpoints: list/reset users (convenience for local testing)
+  app.get('/api/dev-auth/users', async (req, res) => {
+    try {
+      const rows = await devAuth.listUsers()
+      res.json({ ok: true, users: rows })
+    } catch (e) {
+      res.status(500).json({ ok: false, error: e.message })
+    }
+  })
+
+  app.post('/api/dev-auth/reset', async (req, res) => {
+    try {
+      await devAuth.resetUsers()
+      res.json({ ok: true })
+    } catch (e) {
+      res.status(500).json({ ok: false, error: e.message })
+    }
+  })
 } catch (e) {
   console.warn('Dev auth store not available:', e.message)
 }
