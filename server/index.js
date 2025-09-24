@@ -62,4 +62,30 @@ app.post('/api/create-task', async (req, res) => {
   }
 })
 
+// Dev auth endpoints (local JSON store; NOT for production use)
+try {
+  const devAuth = require('./devAuthStore')
+  app.post('/api/dev-auth/signup', async (req, res) => {
+    try {
+      const { playerName, passcode, email, companyName } = req.body || {}
+      const out = await devAuth.signup({ playerName, passcode, email, companyName })
+      res.json({ ok: true, user: out })
+    } catch (e) {
+      res.status(400).json({ ok: false, error: e.message })
+    }
+  })
+
+  app.post('/api/dev-auth/login', async (req, res) => {
+    try {
+      const { identifier, passcode } = req.body || {}
+      const out = await devAuth.login({ identifier, passcode })
+      res.json(out)
+    } catch (e) {
+      res.status(400).json({ ok: false, error: e.message })
+    }
+  })
+} catch (e) {
+  console.warn('Dev auth store not available:', e.message)
+}
+
 app.listen(PORT, () => console.log(`Server listening ${PORT}`))

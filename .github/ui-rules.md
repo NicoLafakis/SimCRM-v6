@@ -5,6 +5,7 @@ These rules are mandatory for all new UI elements, pages, and frontend features.
 ## Color Palette
 - Light Gray Background: `#e8e8e8`
 - Slate Gray Frame: `#6c7b7f`
+- Charcoal Gray Shell: `#8a8a8a`
 - Olive Green Screen: `#8fbc8f`
 - Sage Input Fields: `#9fb89f`
 - Dark Red Button: `#8b0000`
@@ -14,6 +15,7 @@ These rules are mandatory for all new UI elements, pages, and frontend features.
 ## Color Usage Guidelines
 - Light Gray (`#e8e8e8`): Main background, neutral areas
 - Slate Gray (`#6c7b7f`): Container borders, structural elements
+- Charcoal Gray (`#8a8a8a`): Shell/background elements for pixel look
 - Olive Green (`#8fbc8f`): Primary interface panels, hero sections
 - Sage (`#9fb89f`): Input fields, secondary panels
 - Dark Red (`#8b0000`): Primary action buttons, important CTAs
@@ -31,14 +33,14 @@ These rules are mandatory for all new UI elements, pages, and frontend features.
 
 ## Buttons
 - Use palette colors (Dark Red for primary, Green for secondary). White text.
-- Border: 3–4px solid, dark slate (`#24323a`).
+- Border: 2–3px solid, dark slate (`#24323a`).
 - Shape: Squared/pixel corners (`4–6px` radius max).
 - Shadow: `0 6px 0 rgba(0,0,0,0.2)`; press effect may shift by 1px.
 
 ## Inputs
 - Background: Sage `#9fb89f` for filled areas; transparent overlays allowed on green screens.
 - Text: Dark Green `#2d3e2d`.
-- Border: 3px solid, `#2f3a2f`.
+- Border: 2px solid, `#2f3a2f`.
 - Radius: 4px.
 
 ## Panels & Screens
