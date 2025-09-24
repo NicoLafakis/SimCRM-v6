@@ -16,7 +16,7 @@ SimCRM is a HubSpot CRM simulation tool with dual architecture: a React frontend
 - **Client Pattern**: `hubspotClient.js` provides retry logic with exponential backoff and rate limit handling
 - **Tool Pattern**: Each HubSpot object type has a dedicated tool module (`server/tools/hubspot/`) with CRUD operations
 - **Orchestrator Pattern**: High-level workflows in `orchestrator.js` handle multi-object operations and associations
-- **Association IDs**: Uses HubSpot v4 associations API with hardcoded type IDs (contact→company: 1, deal→contact: 5, deal→company: 3)
+- **Association Management**: Centralized `associations.js` module with correct HubSpot v4 API type IDs and comprehensive association support
 
 ## Development Workflows
 
@@ -59,9 +59,10 @@ test/                   - Simulation engine tests
 All tools follow consistent pattern: `create()`, `get()`, `update()`, `delete()`, `batchUpsert()` methods. Tools are factories that accept a client instance.
 
 ### Association Management
-- Frontend: Simple `contact.companyId` property links
-- Backend: Uses HubSpot v4 associations API with PUT requests
-- Association failures are silently ignored in orchestrator workflows
+- **Centralized Module**: `server/tools/hubspot/associations.js` handles all association types with correct type IDs
+- **Supported Associations**: Contact↔Company, Deal↔Contact/Company, Note↔Contact/Company/Deal, Call↔Contact, Task↔Contact (ownership)
+- **API Methods**: Both individual and batch operations, with proper error handling and best-effort association creation
+- Frontend: Simple `contact.companyId` property links for simulation
 
 ### State Synchronization
 Frontend and backend operate independently - no shared state. Backend is stateless, frontend maintains simulation state in `SimulationEngine` instance.

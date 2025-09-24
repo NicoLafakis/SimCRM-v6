@@ -32,4 +32,34 @@ app.post('/api/create-deal', async (req, res) => {
   }
 })
 
+app.post('/api/create-note', async (req, res) => {
+  try {
+    const { noteProps, contactId, companyId, dealId, ticketId } = req.body
+    const result = await orchestrator.createNoteWithAssociations({ noteProps, contactId, companyId, dealId, ticketId })
+    res.json(result)
+  } catch (err) {
+    res.status(500).json({ error: err.message, details: err.response?.data || null })
+  }
+})
+
+app.post('/api/create-call', async (req, res) => {
+  try {
+    const { callProps, contactId } = req.body
+    const result = await orchestrator.createCallForContact({ callProps, contactId })
+    res.json(result)
+  } catch (err) {
+    res.status(500).json({ error: err.message, details: err.response?.data || null })
+  }
+})
+
+app.post('/api/create-task', async (req, res) => {
+  try {
+    const { taskProps, contactId } = req.body
+    const result = await orchestrator.createTaskForContact({ taskProps, contactId })
+    res.json(result)
+  } catch (err) {
+    res.status(500).json({ error: err.message, details: err.response?.data || null })
+  }
+})
+
 app.listen(PORT, () => console.log(`Server listening ${PORT}`))

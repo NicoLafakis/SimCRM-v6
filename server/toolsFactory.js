@@ -6,6 +6,7 @@ const engagements = require('./tools/hubspot/engagements')
 const quotes = require('./tools/hubspot/quotes')
 const invoices = require('./tools/hubspot/invoices')
 const customObjects = require('./tools/hubspot/customObjects')
+const associations = require('./tools/hubspot/associations')
 
 function createTools(client) {
   return {
@@ -17,6 +18,7 @@ function createTools(client) {
     quotes: quotes(client),
     invoices: invoices(client),
     customObjects: customObjects(client),
+    associations: associations(client),
   }
 }
 
