@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default function AuthPage() {
+export default function AuthPage({ onSignup }) {
   return (
     <div className="landing">
       <div className="auth-wrap" role="region" aria-label="Login form">
@@ -18,7 +18,7 @@ export default function AuthPage() {
         <div className="auth-actions">
           <button className="btn btn-login">Login</button>
           <div className="auth-or">OR</div>
-          <button className="btn btn-signup">Sign Up</button>
+          <button className="btn btn-signup" onClick={onSignup}>Sign Up</button>
         </div>
       </div>
       <footer className="site-footer">©️2025 Black Maige. Game the simulation.</footer>

@@ -35,14 +35,32 @@ body { margin: 0; font-family: 'Press Start 2P', cursive; background-color: var(
 	overflow: hidden;
 }
 
+/* Corner logo (shown on post-landing pages) */
+.corner-logo {
+	position: fixed;
+	top: 3%;
+	left: 3%;
+	border: none;
+	background: transparent;
+	padding: 0;
+	cursor: pointer;
+	z-index: 4;
+}
+.corner-logo img {
+	display: block;
+	width: 160px;
+	max-width: 18vw;
+	height: auto;
+}
+
 /* Auth page wrapper */
 .auth-wrap { display: grid; gap: 22px; place-items: center; z-index: 2 }
 
 /* Game Boy-like shell and screen */
 .gb-shell {
-	background: #6c7b7f; /* solid (no gradient) for pixel look */
+	background: #8a8a8a; /* solid (no gradient) for pixel look */
 	border: 2px solid #3f3f44;
-	border-radius: 12px 12px 36px 12px; /* BR bevel 3x */
+	border-radius: 12px 12px 64px 12px; /* BR bevel 3x */
 	padding: 28px 72px; /* thicker left/right bezel (2x) */
 	box-shadow: 0 6px 0 rgba(0,0,0,0.2), 0 6px 28px rgba(0,0,0,0.18);
 }
@@ -57,6 +75,8 @@ body { margin: 0; font-family: 'Press Start 2P', cursive; background-color: var(
 	display: grid;
 	gap: 12px;
 }
+
+.gb-screen--tall { padding-bottom: 8px; height: auto; }
 .gb-label { font-size: 12px; color: #21313a; opacity: 0.95 }
 .gb-input {
 	font-family: 'Press Start 2P', cursive;

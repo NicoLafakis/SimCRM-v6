@@ -78,6 +78,7 @@ These rules are mandatory for all new UI elements, pages, and frontend code. If 
 ### Color Palette (Hex)
 - Light Gray Background: `#e8e8e8`
 - Slate Gray Frame: `#6c7b7f`
+- Charcoal Gray Shell: `#8a8a8a`
 - Olive Green Screen: `#8fbc8f`
 - Sage Input Fields: `#9fb89f`
 - Dark Red Button: `#8b0000`
@@ -87,6 +88,7 @@ These rules are mandatory for all new UI elements, pages, and frontend code. If 
 ### Color Usage Guidelines
 - Light Gray (`#e8e8e8`): Main background, neutral areas
 - Slate Gray (`#6c7b7f`): Container borders, structural elements
+- Charcoal Gray (`#8a8a8a`): Shell/background elements for pixel look
 - Olive Green (`#8fbc8f`): Primary interface panels, hero sections
 - Sage (`#9fb89f`): Input fields, secondary panels
 - Dark Red (`#8b0000`): Primary action buttons, important CTAs
