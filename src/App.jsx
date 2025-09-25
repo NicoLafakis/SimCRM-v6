@@ -1,61 +1,46 @@
-import React, { useMemo, useState, useCallback, useEffect } from 'react'
-import LandingPage from './components/LandingPage'
-import AuthPage from './components/AuthPage'
-import SignUpPage from './components/SignUpPage'
-import pluckUrl from '../assets/gameboy-pluck.mp3'
-import CornerLogo from './components/CornerLogo'
+import React, { useEffect, useState, useRef } from 'react'
+import SimulationEngine from './simulation/SimulationEngine'
 
 export default function App() {
-  const [view, setView] = useState('landing')
-  const [user, setUser] = useState(null)
-  const audio = useMemo(() => new Audio(pluckUrl), [])
-  const [scrolled, setScrolled] = useState(false)
+  const [running, setRunning] = useState(false)
+  const [logs, setLogs] = useState([])
+  const engineRef = useRef(null)
 
   useEffect(() => {
-    const onScroll = () => {
-      setScrolled(window.scrollY > 120)
-    }
-    window.addEventListener('scroll', onScroll, { passive: true })
-    onScroll()
-    return () => window.removeEventListener('scroll', onScroll)
+    engineRef.current = new SimulationEngine({ onEvent: e => setLogs(l => [e, ...l]) })
+    return () => engineRef.current?.stop()
   }, [])
 
-  const scrollToTop = () => {
-    try { window.scrollTo({ top: 0, behavior: 'smooth' }) } catch { window.scrollTo(0,0) }
+  function start() {
+    setRunning(true)
+    engineRef.current.start()
+  }
+  function stop() {
+    setRunning(false)
+    engineRef.current.stop()
   }
 
-  const handleContinue = useCallback(() => {
-    try {
-      audio.currentTime = 0
-      audio.play().catch(() => {})
-    } catch {}
-    setView('auth')
-  }, [audio])
+  return (
+    <div className="app">
+      <header>
+        <h1>SimCRM - HubSpot Simulation</h1>
+        <div className="controls">
+          {running ? (
+            <button onClick={stop}>Stop</button>
+          ) : (
+            <button onClick={start}>Start Simulation</button>
+          )}
+        </div>
+      </header>
 
-  if (user) return (
-    <div className="landing">
-      <CornerLogo onClick={() => setView('landing')} />
-      {scrolled && <button className="back-to-top" onClick={scrollToTop} aria-label="Back to top">↑</button>}
-      <div style={{ zIndex: 2, textAlign: 'center' }}>
-        <h2 style={{ color: '#1e3a5f' }}>Welcome, {user.playerName}!</h2>
-        <p style={{ color: '#21313a' }}>You are logged in (dev mode).</p>
-        <button className="btn btn-login" onClick={() => setUser(null)}>Sign out</button>
-      </div>
-      <footer className="site-footer">©️2025 Black Maige. Game the simulation.</footer>
+      <section className="logs">
+        <h2>Event Log</h2>
+        <ul>
+          {logs.map((l, i) => (
+            <li key={i}>{l}</li>
+          ))}
+        </ul>
+      </section>
     </div>
   )
-
-  if (view === 'auth') return <>
-    <CornerLogo onClick={() => setView('landing')} />
-    {scrolled && <button className="back-to-top" onClick={scrollToTop} aria-label="Back to top">↑</button>}
-    <AuthPage onSignup={() => { try { audio.currentTime = 0; audio.play().catch(() => {}) } catch {}; setView('signup') }} onLogin={u => setUser(u)} />
-  </>
-
-  if (view === 'signup') return <>
-    <CornerLogo onClick={() => setView('landing')} />
-    {scrolled && <button className="back-to-top" onClick={scrollToTop} aria-label="Back to top">↑</button>}
-    <SignUpPage onBack={() => setView('auth')} />
-  </>
-
-  return <LandingPage onContinue={handleContinue} />
 }

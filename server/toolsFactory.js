@@ -1,12 +1,11 @@
-const contacts = require('./tools/hubspot/contacts')
-const companies = require('./tools/hubspot/companies')
-const deals = require('./tools/hubspot/deals')
-const tickets = require('./tools/hubspot/tickets')
-const engagements = require('./tools/hubspot/engagements')
-const quotes = require('./tools/hubspot/quotes')
-const invoices = require('./tools/hubspot/invoices')
-const customObjects = require('./tools/hubspot/customObjects')
-const associations = require('./tools/hubspot/associations')
+const contacts = require('./tools/contacts')
+const companies = require('./tools/companies')
+const deals = require('./tools/deals')
+const tickets = require('./tools/tickets')
+const engagements = require('./tools/engagements')
+const quotes = require('./tools/quotes')
+const invoices = require('./tools/invoices')
+const customObjects = require('./tools/customObjects')
 
 function createTools(client) {
   return {
@@ -18,7 +17,6 @@ function createTools(client) {
     quotes: quotes(client),
     invoices: invoices(client),
     customObjects: customObjects(client),
-    associations: associations(client),
   }
 }
 
