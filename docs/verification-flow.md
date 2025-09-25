@@ -7,7 +7,7 @@ This document outlines the new post-signup verification experience. The goal is 
 1. **Signup Success** – `SignUpPage` receives the created player payload from `/api/dev-auth/signup`.
 2. **Transition to Verification Intro** – App stores the pending user and switches to the `verification-intro` view.
 3. **Verification Instructions Screen** – Presents the purpose of the challenge, the controls (keyboard + touch), and a “Launch Challenge” button.
-4. **Tetris Verification Game** – The player must drop pieces into a 10×20 grid. Completing at least one line marks success.
+4. **Tetris Verification Game** – The player must drop pieces into a 10×20 grid. Completing at least one line marks success. The game now defaults to a classic rule set (no ghost, no next-piece preview, no hard drop) unless enhanced mode is explicitly requested.
 5. **Completion** – On success, the game notifies App, which promotes the pending user to the signed-in user and returns to the dashboard state.
 
 ## Components & State
@@ -25,13 +25,13 @@ This document outlines the new post-signup verification experience. The goal is 
   - shows challenge overview, controls reference, and CTA to start.
 
 - `TetrisVerification.jsx`
-  - implements full Tetris gameplay including keyboard handler and touch gamepad overlay.
-  - props: `onSuccess()`, `onExit()`.
+  - implements Tetris gameplay (classic mode by default) including keyboard handler and touch gamepad overlay.
+  - props: `onSuccess()`, `onExit()`, optional `mode` ('classic' | 'enhanced').
 
 - `components/tetris/` helpers
-  - `constants.js` – piece shapes, rotation states.
-  - `useTetrisEngine.js` – hook to manage board state, movement, collision, line clearing, next piece queue.
-  - `GamepadControls.jsx` – renders circular touch buttons and translates taps to engine commands.
+  - `tetrominoes.js` – piece shapes & rotations.
+  - `useTetrisEngine.js` – unified rAF loop for gravity + DAS; classic vs enhanced config gates (preview, ghost, hard drop, soft drop behaviors).
+  - `GamepadControls.jsx` – touch controls; omits hard drop button in classic mode.
 
 ## Verification Success Criteria
 
@@ -43,7 +43,9 @@ This document outlines the new post-signup verification experience. The goal is 
 
 - Keep the pixel aesthetic consistent with existing styles.
 - Instruction screen uses the same color palette and fonts.
-- Game view includes next-piece preview and displays remaining requirement ("Clear 1 line to verify").
+- Game view (enhanced) includes next-piece preview; classic hides preview & ghost for authenticity.
+- Soft drop: classic performs a per-frame descent while ArrowDown held; enhanced uses gravity + optional hard drop only.
+- Hard drop: available only in enhanced mode (Space or on-screen control).
 - Touch controls: four circular buttons positioned bottom-right/left for directional + rotation actions.
 
 ## Future Enhancements (optional)

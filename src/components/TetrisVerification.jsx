@@ -6,11 +6,10 @@ import GamepadControls from './tetris/GamepadControls'
 
 const BLOCK_FILL = 'rgba(42, 64, 42, 0.85)'
 
-export default function TetrisVerification({ onSuccess, onExit }) {
+export default function TetrisVerification({ onSuccess, onExit, mode = 'classic' }) {
   const {
     board,
     activeCells,
-    ghostCells,
     currentPiece,
     nextPiece,
     linesCleared,
@@ -18,10 +17,11 @@ export default function TetrisVerification({ onSuccess, onExit }) {
     isRunning,
     reset,
     gameOver,
-  } = useTetrisEngine({ onWin: onSuccess, onFail: () => {} })
+    config,
+  } = useTetrisEngine({ onWin: onSuccess, onFail: () => {}, mode })
 
   const activeSet = useMemo(() => new Set(activeCells.map(({ x, y }) => `${x}:${y}`)), [activeCells])
-  const ghostSet = useMemo(() => new Set(ghostCells.map(({ x, y }) => `${x}:${y}`)), [ghostCells])
+  // Ghost/shadow removed
 
   useEffect(() => {
     const handler = (e) => {
@@ -35,25 +35,42 @@ export default function TetrisVerification({ onSuccess, onExit }) {
           e.preventDefault()
           controls.moveRight()
           break
-        case 'ArrowUp':
+        case 'ArrowUp': // CW rotate
+          e.preventDefault(); controls.rotate(); break
+        case 'z': // CCW rotate (classic parity)
+        case 'Z':
+          e.preventDefault(); controls.rotateCCW?.(); break
+        case 'ArrowDown': // soft drop hold (classic) or hard drop (enhanced)
           e.preventDefault()
-          controls.rotate()
+          if (config.mode === 'classic') {
+            controls.softDropStart?.()
+          } else {
+            controls.hardDrop?.()
+          }
           break
-        case 'ArrowDown':
-          e.preventDefault()
-          controls.hardDrop()
+        case ' ': // Space = hard drop in enhanced only
+          if (config.mode !== 'classic') {
+            e.preventDefault(); controls.hardDrop?.();
+          }
           break
         default:
       }
     }
 
     window.addEventListener('keydown', handler)
+    const upHandler = (e) => {
+      if (e.key === 'ArrowDown' && config.mode === 'classic') {
+        controls.softDropEnd?.()
+      }
+    }
+    window.addEventListener('keyup', upHandler)
     return () => {
       window.removeEventListener('keydown', handler)
+      window.removeEventListener('keyup', upHandler)
     }
-  }, [controls, isRunning])
+  }, [controls, isRunning, config.mode])
 
-  const previewShape = useMemo(() => TETROMINOES[nextPiece.type].rotations[0], [nextPiece])
+  const previewShape = useMemo(() => (nextPiece ? TETROMINOES[nextPiece.type].rotations[0] : null), [nextPiece])
 
   return (
   <div className="landing verification-game tetris-verify">
@@ -74,12 +91,11 @@ export default function TetrisVerification({ onSuccess, onExit }) {
                   {row.map((cell, x) => {
                     const key = `${x}:${y}`
                     const isActive = activeSet.has(key)
-                    const isGhost = ghostSet.has(key) && !isActive
                     const color = (isActive || cell) ? BLOCK_FILL : undefined
                     return (
                       <div
                         key={key}
-                        className={`gb-cell${isActive ? ' active' : ''}${isGhost ? ' ghost' : ''}`}
+                        className={`gb-cell${isActive ? ' active' : ''}`}
                         style={color ? { backgroundColor: color } : undefined}
                       />
                     )
@@ -93,22 +109,24 @@ export default function TetrisVerification({ onSuccess, onExit }) {
                 <div className="gb-box-title">LINES</div>
                 <div className="gb-box-value">{linesCleared}</div>
               </div>
-              <div className="gb-box gb-next" aria-label="Next piece preview">
-                <div className="gb-box-title">NEXT</div>
-                <div className="gb-next-grid">
-                  {previewShape.map((row, y) => (
-                    <div className="gb-next-row" key={`preview-${y}`}>
-                      {row.map((value, x) => (
-                        <div
-                          key={`preview-${x}-${y}`}
-                          className={`gb-next-cell${value ? ' filled' : ''}`}
-                          style={value ? { backgroundColor: BLOCK_FILL } : undefined}
-                        />
-                      ))}
-                    </div>
-                  ))}
+              {config.preview && previewShape && (
+                <div className="gb-box gb-next" aria-label="Next piece preview">
+                  <div className="gb-box-title">NEXT</div>
+                  <div className="gb-next-grid">
+                    {previewShape.map((row, y) => (
+                      <div className="gb-next-row" key={`preview-${y}`}>
+                        {row.map((value, x) => (
+                          <div
+                            key={`preview-${x}-${y}`}
+                            className={`gb-next-cell${value ? ' filled' : ''}`}
+                            style={value ? { backgroundColor: BLOCK_FILL } : undefined}
+                          />
+                        ))}
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
               {gameOver && (
                 <div className="gb-box gb-retry">
                   <div className="gb-box-title">GAME OVER</div>
@@ -124,7 +142,7 @@ export default function TetrisVerification({ onSuccess, onExit }) {
               onLeft={controls.moveLeft}
               onRight={controls.moveRight}
               onRotate={controls.rotate}
-              onHardDrop={controls.hardDrop}
+              onHardDrop={config.mode === 'classic' ? undefined : controls.hardDrop}
             />
           </div>
         </div>
