@@ -1,6 +1,8 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
+import pluckUrl from '../../assets/gameboy-pluck.mp3'
 
-export default function SignUpPage({ onBack }) {
+export default function SignUpPage({ onBack, onSuccess }) {
+  const plunk = useMemo(() => new Audio(pluckUrl), [])
   const [playerName, setPlayerName] = useState('')
   const [passcode, setPasscode] = useState('')
   const [verify, setVerify] = useState('')
@@ -18,6 +20,10 @@ export default function SignUpPage({ onBack }) {
 
   const submit = async (e) => {
     e?.preventDefault()
+    try {
+      plunk.currentTime = 0
+      plunk.play().catch(() => {})
+    } catch {}
     setError(null)
     if (!playerName || !passcode) {
       setError('Player name and passcode are required')
@@ -56,9 +62,10 @@ export default function SignUpPage({ onBack }) {
           setLoading(false)
           return
         }
-      // success - navigate back to login
+      // success - notify parent
       setLoading(false)
-      onBack && onBack()
+      if (onSuccess) onSuccess(data.user)
+      else onBack && onBack()
     } catch (e) {
       setError(e.message || 'Network error')
       setLoading(false)
