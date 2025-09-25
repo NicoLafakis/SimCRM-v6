@@ -2,7 +2,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { BOARD_HEIGHT, BOARD_WIDTH, getRandomPiece, TETROMINOES } from './tetrominoes'
 
 const DROP_INTERVAL = 800
-const SOFT_DROP_INTERVAL = 80
 const SPAWN_POSITION = { x: 3, y: -2 }
 
 function createEmptyBoard() {
@@ -53,14 +52,15 @@ export function useTetrisEngine({ onWin, linesTarget = 1, onFail }) {
   const [linesCleared, setLinesCleared] = useState(0)
   const [isRunning, setIsRunning] = useState(true)
   const dropTimer = useRef(null)
-  const softDropping = useRef(false)
+  const [gameOver, setGameOver] = useState(false)
 
   const reset = useCallback(() => {
     setBoard(createEmptyBoard())
-  setCurrent({ piece: getRandomPiece(), position: { ...SPAWN_POSITION } })
+    setCurrent({ piece: getRandomPiece(), position: { ...SPAWN_POSITION } })
     setNextPiece(getRandomPiece())
     setLinesCleared(0)
     setIsRunning(true)
+    setGameOver(false)
   }, [])
 
   const lockPiece = useCallback(() => {
@@ -85,6 +85,7 @@ export function useTetrisEngine({ onWin, linesTarget = 1, onFail }) {
     if (!isValidPosition(clearedBoard, upcoming.piece, upcoming.position)) {
       setBoard(clearedBoard)
       setIsRunning(false)
+      setGameOver(true)
       onFail?.()
       return
     }
@@ -118,31 +119,32 @@ export function useTetrisEngine({ onWin, linesTarget = 1, onFail }) {
 
   useEffect(() => {
     if (!isRunning) return
-    const interval = softDropping.current ? SOFT_DROP_INTERVAL : DROP_INTERVAL
     dropTimer.current = setInterval(() => {
       tryMove(0, 1)
-    }, interval)
+    }, DROP_INTERVAL)
     return () => clearInterval(dropTimer.current)
   }, [isRunning, tryMove])
+
+  const hardDrop = useCallback(() => {
+    if (!isRunning) return
+    setCurrent(prev => {
+      let testY = prev.position.y
+      while (isValidPosition(board, prev.piece, { x: prev.position.x, y: testY + 1 })) {
+        testY += 1
+      }
+      return { piece: prev.piece, position: { x: prev.position.x, y: testY } }
+    })
+    // After state update flush, lock on next tick
+    setTimeout(() => lockPiece(), 0)
+  }, [board, isRunning, lockPiece])
 
   const controls = useMemo(() => ({
     moveLeft: () => tryMove(-1, 0),
     moveRight: () => tryMove(1, 0),
     rotate: () => tryMove(0, 0, 1),
-    softDropStart: () => {
-      if (!isRunning) return
-      softDropping.current = true
-      clearInterval(dropTimer.current)
-      dropTimer.current = setInterval(() => tryMove(0, 1), SOFT_DROP_INTERVAL)
-    },
-    softDropStop: () => {
-      if (!isRunning) return
-      softDropping.current = false
-      clearInterval(dropTimer.current)
-      dropTimer.current = setInterval(() => tryMove(0, 1), DROP_INTERVAL)
-    },
+    hardDrop,
     reset,
-  }), [isRunning, reset, tryMove])
+  }), [hardDrop, isRunning, reset, tryMove])
 
   const ghostCells = useMemo(() => {
   let ghostPos = current.position
@@ -164,5 +166,6 @@ export function useTetrisEngine({ onWin, linesTarget = 1, onFail }) {
     controls,
     isRunning,
     reset,
+    gameOver,
   }
 }

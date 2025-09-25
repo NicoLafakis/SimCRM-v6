@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default function GamepadControls({ onLeft, onRight, onRotate, onDropStart, onDropEnd }) {
+export default function GamepadControls({ onLeft, onRight, onRotate, onHardDrop }) {
   return (
     <div className="tetris-gamepad" aria-hidden="false" role="group" aria-label="Touch controls">
       <div className="pad-left">
@@ -10,18 +10,7 @@ export default function GamepadControls({ onLeft, onRight, onRotate, onDropStart
         <button type="button" className="pad-btn" onClick={onRotate}>
           ↻
         </button>
-        <button
-          type="button"
-          className="pad-btn"
-          onTouchStart={onDropStart}
-          onTouchEnd={onDropEnd}
-          onTouchCancel={onDropEnd}
-          onMouseDown={onDropStart}
-          onMouseUp={onDropEnd}
-          onMouseLeave={onDropEnd}
-        >
-          ↓
-        </button>
+        <button type="button" className="pad-btn" onClick={onHardDrop}>↓</button>
         <button type="button" className="pad-btn" onClick={onRight}>
           →
         </button>
