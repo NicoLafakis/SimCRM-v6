@@ -1,68 +1,43 @@
-# SimCRM AI Agent Instructions
 
-## Overview
-SimCRM is a HubSpot CRM simulation tool with dual architecture: a React frontend simulation and an Express backend with real HubSpot API integration. The simulation engine mimics CRM workflows without API calls, while the server provides production-ready HubSpot integration.
+# SimCRM — Copilot / AI Agent Instructions (concise)
 
-## Architecture
+Purpose: give an AI coding agent the essential, codebase-specific facts to be productive quickly. Read the referenced files for examples before editing.
 
-### Frontend Simulation (`src/simulation/SimulationEngine.js`)
-- **Core Pattern**: Event-driven simulation with interval-based state progression
-- **Data Model**: In-memory records with lifecycle stages (`subscriber` → `marketing_qualified_lead` → `sales_qualified_lead`)
-- **Marketing Funnel**: Time-based progression through stages (`new` → `engaged` → `mql` → `sql`/`nurture`)
-- **Deal Flow**: Automatic deal creation for SQLs with probabilistic outcomes (60% win rate)
-- **Key Method**: `createContactWithCompany()` creates associated contact-company pairs with initial notes
+Quick facts
+- Frontend simulation (in-memory): `src/simulation/SimulationEngine.js` — event-driven, interval ticks, staged lifecycle (subscriber → mql → sql). Key helper: `createContactWithCompany()`.
+- Backend API (stateless Express): `server/` — `hubspotClient.js` (retry/backoff + rate-limit handling), `server/tools/hubspot/*` (tool modules), `orchestrator.js` (multi-object workflows).
+- Associations central mapping: `server/tools/hubspot/associations.js` (HubSpot v4 type IDs) — use this when creating associations server-side.
 
-### Backend API (`server/`)
-- **Client Pattern**: `hubspotClient.js` provides retry logic with exponential backoff and rate limit handling
-- **Tool Pattern**: Each HubSpot object type has a dedicated tool module (`server/tools/hubspot/`) with CRUD operations
-- **Orchestrator Pattern**: High-level workflows in `orchestrator.js` handle multi-object operations and associations
-- **Association Management**: Centralized `associations.js` module with correct HubSpot v4 API type IDs and comprehensive association support
+How to run (developer defaults)
+- Frontend dev: `npm run dev` (Vite).
+- API server: `npm run start-server` (Express, default port 4000).
+- Tests: `npm test` (Vitest; tests under `test/`).
+- Build: `npm run build`.
 
-## Development Workflows
+Environment
+- Optional: set `HUBSPOT_API_TOKEN` in `.env` for real API calls. Server logs a warning if absent but keeps running (simulation-only mode).
 
-### Commands
-- `npm run dev` - Start Vite development server (React app)
-- `npm run start-server` - Start Express API server on port 4000
-- `npm test` - Run Vitest tests
-- `npm run build` - Build production React app
+Project conventions & patterns (do not change without matching examples)
+- ID generation: prefixed sequential IDs (see `src/simulation/SimulationEngine.js` usage like `genId('ct')` → `ct_1`). Keep this prefix pattern when adding simulated objects.
+- Tool factory pattern: each file in `server/tools/hubspot/` exports a factory that accepts a `client` and returns methods `create, get, update, delete, batchUpsert`.
+- Client responsibilities: `server/hubspotClient.js` centralizes HTTP retries, exponential backoff, and rate-limit handling. Use it rather than raw axios/fetch.
+- Association handling: use `associations.js` mapping for correct type IDs and prefer batch association helpers when available.
 
-### Environment Setup
-- Requires `HUBSPOT_API_TOKEN` in `.env` for server functionality
-- Server warns but continues without token (simulation works independently)
+Testing notes (examples)
+- Simulation tests manipulate time-like fields: set `c.createdAt = Date.now() - X` to force state transitions (see `test/simulation.test.js`).
+- Tests focus on deterministic simulation behavior and relationships — they avoid external HubSpot calls.
 
-## Key Patterns
+Where to change for common tasks
+- Add a new HubSpot object/tool: create `server/tools/hubspot/<object>.js` following existing tool files; accept `client` and return CRUD methods.
+- Add simulation behavior: edit `src/simulation/SimulationEngine.js` and update tests in `test/` accordingly.
+- Add orchestrated workflows: `server/orchestrator.js` shows patterns for multi-object operations and best-effort association creation.
 
-### ID Generation
-Uses prefixed sequential IDs: `genId('ct')` → `ct_1`, `ct_2`, etc. Pattern ensures unique identifiers across object types.
+Gotchas & quick warnings
+- Frontend simulation should not call HubSpot tools directly. Production HubSpot calls live in `server/` only.
+- Associations must use numeric type IDs from `associations.js` (HubSpot v4). Mistyping these silently fails.
 
-### Error Handling in Tools
-- API client handles retries and rate limiting automatically
-- Tools return raw HubSpot API responses (`res.data`)
-- Orchestrator operations use best-effort association creation (ignores association errors)
+If something is missing
+- Ask for the specific file or flow you want to modify. Point to a concrete example (file and function) and the agent will follow the local patterns.
 
-### Testing Strategy
-- Focus on `SimulationEngine` logic with time manipulation (`c.createdAt = Date.now() - 15000`)
-- Tests verify state transitions and data relationships, not API calls
-- Uses Vitest with React Testing Library setup
-
-### File Organization
-```
-src/simulation/         - Frontend simulation logic
-server/tools/hubspot/   - HubSpot object CRUD operations
-server/                 - API orchestration and client
-test/                   - Simulation engine tests
-```
-
-## Integration Points
-
-### HubSpot Objects
-All tools follow consistent pattern: `create()`, `get()`, `update()`, `delete()`, `batchUpsert()` methods. Tools are factories that accept a client instance.
-
-### Association Management
-- **Centralized Module**: `server/tools/hubspot/associations.js` handles all association types with correct type IDs
-- **Supported Associations**: Contact↔Company, Deal↔Contact/Company, Note↔Contact/Company/Deal, Call↔Contact, Task↔Contact (ownership)
-- **API Methods**: Both individual and batch operations, with proper error handling and best-effort association creation
-- Frontend: Simple `contact.companyId` property links for simulation
-
-### State Synchronization
-Frontend and backend operate independently - no shared state. Backend is stateless, frontend maintains simulation state in `SimulationEngine` instance.
+Feedback
+Please review these notes and tell me if you'd like more examples (small code snippets) for any pattern, or if you'd prefer a longer form with do/don't lists.
