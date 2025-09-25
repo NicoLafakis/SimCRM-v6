@@ -1,7 +1,0 @@
-body { font-family: system-ui, sans-serif; margin: 0; padding: 0; }
-.app { padding: 20px; }
-header { display:flex; align-items:center; justify-content:space-between }
-.controls button { padding: 8px 12px; }
-.logs { margin-top: 20px }
-.logs ul { list-style: none; padding: 0 }
-.logs li { padding: 6px 0; border-bottom: 1px solid #eee }
