@@ -31,13 +31,19 @@ export default function BoomboxPlayer() {
       {expanded && (
         <div className="boombox-body">
           <div className="boombox-screen">
-            <span className="boombox-track" aria-live="polite">{track?.title || 'NO TRACK LOADED'}</span>
+            <div className="boombox-track-viewport">
+              <span className="boombox-track" aria-live="polite">{track?.title || 'NO TRACK LOADED'}</span>
+            </div>
           </div>
           <div className="boombox-controls">
             <button className="bb-btn" onClick={prev} aria-label="Previous track">«</button>
             <button className="bb-btn" onClick={togglePlay} aria-label={isPlaying ? 'Pause' : 'Play'}>{isPlaying ? '❚❚' : '▶'}</button>
             <button className="bb-btn" onClick={next} aria-label="Next track">»</button>
+          </div>
+          <div className="boombox-volume">
+            <label className="bb-vol-label" htmlFor="bb-volume">VOL</label>
             <input
+              id="bb-volume"
               type="range"
               min={0}
               max={1}
@@ -47,6 +53,7 @@ export default function BoomboxPlayer() {
               aria-label="Volume"
               className="bb-vol"
             />
+            <div className="bb-vol-percent" aria-live="polite">{Math.round(volume * 100)}%</div>
           </div>
           <div className="boombox-meta" aria-live="polite">{playlist && playlist.length ? `${index+1}/${playlist.length}` : '0/0'}</div>
         </div>

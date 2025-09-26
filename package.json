@@ -8,7 +8,9 @@
     "build": "vite build",
     "preview": "vite preview",
     "test": "vitest",
-    "start-server": "node server/index.js"
+    "start-server": "node server/index.js",
+    "migrate:latest": "node ./node_modules/knex/bin/cli.js migrate:latest --knexfile knexfile.js",
+    "migrate:list": "node ./node_modules/knex/bin/cli.js migrate:list --knexfile knexfile.js"
   },
   "dependencies": {
     "axios": "^1.4.0",
@@ -16,6 +18,7 @@
     "dotenv": "^16.0.0",
     "express": "^4.18.2",
     "mysql2": "^3.15.1",
+    "knex": "^3.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },

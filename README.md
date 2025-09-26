@@ -57,3 +57,48 @@ Enhanced mode is opt-in: pass `mode="enhanced"`.
 Bug fixes / authenticity adjustments:
 - Hard drop now locks synchronously (no frame delay) and is disabled entirely in classic mode.
 - Soft drop implementation no longer piggybacks on gravity tick; it is frame-based for classic accuracy.
+
+## Authentication & Password Storage
+
+The current auth layer provides development-oriented signup/login with the following characteristics:
+
+- Table: `users` (auto-migrated from legacy `dev_users` if present via runtime logic or Knex migration).
+- Password format: `password_hash` column using `scrypt:<salt>:<hash>` (Node.js crypto.scryptSync 64-byte derivation, hex encoded).
+- Legacy columns (`cred_salt`, `cred_hash`) are read only if they still exist; new inserts avoid them unless present.
+- Runtime guard `ensureUsersTable()` performs minimal, idempotent adjustments; formal schema is managed through Knex migrations.
+
+### Migration / Schema Management
+
+Knex is included for explicit schema management.
+
+Scripts:
+```powershell
+npm run migrate:latest   # Apply pending migrations
+npm run migrate:list     # Show migration status
+```
+
+Initial migration: `20250926_initial_users.js` will rename `dev_users` → `users` if needed, create a clean table otherwise, and backfill `password_hash` from legacy columns where appropriate.
+
+### Security Notes & Next Steps
+
+- Replace synchronous scrypt with async scrypt or Argon2id (recommended) before production exposure.
+- Add UNIQUE(emailId) and UNIQUE(playerNameId) constraints via a future migration (currently only indexed).
+- Add rate limiting & account lockout for brute-force mitigation.
+- Implement session or JWT issuance (none yet—responses are stateless success objects only).
+- Introduce versioned hash format (e.g., `algo:v1:salt:hash`) to enable future rotations.
+- Remove legacy columns after confirming all rows hold non-null `password_hash`.
+
+### Environment Variables (DB Auth)
+```powershell
+DB_HOST=localhost
+DB_USER=your_user
+DB_PASS=your_pass
+DB_NAME=simcrm
+DB_PORT=3306
+```
+
+Optional override for JSON dev fallback location:
+```powershell
+DEV_AUTH_DATA_FILE=absolute\path\to\dev-auth.json
+```
+

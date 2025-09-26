@@ -560,6 +560,7 @@
 	position: relative;
 	height: 44px;
 }
+.boombox-track-viewport { position: relative; width: 100%; overflow: hidden; }
 .boombox-track {
 	white-space: nowrap;
 	animation: trackScroll 14s linear infinite;
@@ -567,7 +568,10 @@
 	padding-right: 40px;
 }
 @keyframes trackScroll { 0% { transform: translateX(0); } 100% { transform: translateX(-60%); } }
-.boombox-controls { display: flex; align-items: center; gap: 14px; }
+.boombox-controls { display: flex; align-items: center; gap: 10px; justify-content: space-between; }
+.boombox-volume { display: flex; align-items: center; gap: 8px; }
+.bb-vol-label { font-size: 10px; letter-spacing: .08em; color: #2d3e2d; }
+.bb-vol-percent { font-size: 10px; min-width: 32px; text-align: right; color: #2d3e2d; letter-spacing: .06em; }
 .boombox-meta { font-size: 10px; text-align: right; letter-spacing: 0.08em; color: #2d3e2d; }
 .bb-btn {
 	background: #6c7b7f;

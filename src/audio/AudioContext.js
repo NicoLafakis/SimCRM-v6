@@ -7,16 +7,24 @@ export function AudioProvider({ children }) {
   const audioRef = useRef(new Audio())
   const [expanded, setExpanded] = useState(false)
   const [isPlaying, setIsPlaying] = useState(false)
-  // Build a static playlist from imported assets (manual list for explicit control)
-  // Only include mp3 tracks with SimCRM- prefix (others intentionally excluded)
-  // Static manual list (Vite cannot dynamically read dir at build time without import.meta.glob)
-  // If more SimCRM-*.mp3 files are added, append them here or refactor using import.meta.glob.
-  const playlist = useRef([
-    // Example: { id: 'simcrm-example', title: 'SimCRM Example', src: '/assets/SimCRM-example.mp3' },
-  ].filter(Boolean))
+  // Dynamic playlist discovery using Vite import.meta.glob for all SimCRM-*.mp3 in assets
+  // This builds a module map: { './path/to/file.mp3': () => import(...) }
+  const discovered = import.meta.glob('/assets/SimCRM-*.mp3', { eager: true, import: 'default' })
+  const tracks = Object.entries(discovered).map(([fullPath, src]) => {
+    const file = fullPath.split('/').pop() || ''
+    const base = file.replace(/\.mp3$/i, '')
+    return { id: base.toLowerCase(), title: base, src }
+  })
+  // Ensure Adventure first if present
+  tracks.sort((a,b) => {
+    if (a.title === 'SimCRM-Adventure') return -1
+    if (b.title === 'SimCRM-Adventure') return 1
+    return a.title.localeCompare(b.title)
+  })
+  const playlist = useRef(tracks)
   const [index, setIndex] = useState(0)
   const [track, setTrack] = useState(null) // { src, title }
-  const [volume, setVolume] = useState(0.4)
+  const [volume, setVolume] = useState(0.2)
 
   const toggleExpanded = useCallback(() => setExpanded(e => !e), [])
 

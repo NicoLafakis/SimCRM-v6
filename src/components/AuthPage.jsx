@@ -12,7 +12,7 @@ export default function AuthPage({ onSignup, onLogin }) {
     if (!identifier || !passcode) return setError('Please enter your player name or email and passcode')
     setLoading(true)
     try {
-      const res = await fetch('/api/dev-auth/login', {
+  const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ identifier, passcode })

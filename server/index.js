@@ -62,10 +62,10 @@ app.post('/api/create-task', async (req, res) => {
   }
 })
 
-// Dev auth endpoints (local JSON store; NOT for production use)
+// Auth endpoints (migrated from dev-auth; now using unified users table)
 try {
   const devAuth = require('./devAuthStore')
-  app.post('/api/dev-auth/signup', async (req, res) => {
+  app.post('/api/auth/signup', async (req, res) => {
     try {
       const { playerName, passcode, email, companyName } = req.body || {}
       const out = await devAuth.signup({ playerName, passcode, email, companyName })
@@ -75,7 +75,7 @@ try {
     }
   })
 
-  app.post('/api/dev-auth/login', async (req, res) => {
+  app.post('/api/auth/login', async (req, res) => {
     try {
       const { identifier, passcode } = req.body || {}
       const out = await devAuth.login({ identifier, passcode })
@@ -85,8 +85,8 @@ try {
     }
   })
 
-  // Dev-only admin endpoints: list/reset users (convenience for local testing)
-  app.get('/api/dev-auth/users', async (req, res) => {
+  // Admin endpoints: list/reset users (still convenience; protect in production)
+  app.get('/api/auth/users', async (req, res) => {
     try {
       const rows = await devAuth.listUsers()
       res.json({ ok: true, users: rows })
@@ -95,7 +95,7 @@ try {
     }
   })
 
-  app.post('/api/dev-auth/reset', async (req, res) => {
+  app.post('/api/auth/reset', async (req, res) => {
     try {
       await devAuth.resetUsers()
       res.json({ ok: true })
