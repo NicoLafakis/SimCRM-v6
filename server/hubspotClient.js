@@ -13,12 +13,19 @@ function parseRetryAfter(header) {
 }
 
 function createClient({ apiToken, maxRetries = 4, baseDelay = 500 } = {}) {
-  if (!apiToken) throw new Error('HUBSPOT_API_TOKEN required')
+  // Allow creation without a token; token must be supplied before making a request.
+  let currentToken = apiToken || null
+
   const axiosInstance = axios.create({
     baseURL,
-    headers: { Authorization: `Bearer ${apiToken}`, 'Content-Type': 'application/json' },
     timeout: 15000,
   })
+
+  function ensureAuth() {
+    if (!currentToken) throw new Error('HubSpot token not set for client')
+    axiosInstance.defaults.headers.Authorization = `Bearer ${currentToken}`
+    axiosInstance.defaults.headers['Content-Type'] = 'application/json'
+  }
 
   async function requestWithRetry(method, url, ...args) {
     let attempt = 0
@@ -64,11 +71,12 @@ function createClient({ apiToken, maxRetries = 4, baseDelay = 500 } = {}) {
   }
 
   return {
-    get: (url, opts) => requestWithRetry('get', url, { params: opts }),
-    post: (url, data, opts) => requestWithRetry('post', url, data, opts),
-    patch: (url, data, opts) => requestWithRetry('patch', url, data, opts),
-    put: (url, data, opts) => requestWithRetry('put', url, data, opts),
-    del: (url, opts) => requestWithRetry('delete', url, opts),
+    setToken(token) { currentToken = token },
+    get: (url, opts) => { ensureAuth(); return requestWithRetry('get', url, { params: opts }) },
+    post: (url, data, opts) => { ensureAuth(); return requestWithRetry('post', url, data, opts) },
+    patch: (url, data, opts) => { ensureAuth(); return requestWithRetry('patch', url, data, opts) },
+    put: (url, data, opts) => { ensureAuth(); return requestWithRetry('put', url, data, opts) },
+    del: (url, opts) => { ensureAuth(); return requestWithRetry('delete', url, opts) },
   }
 }
 

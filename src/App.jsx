@@ -8,6 +8,7 @@ import TetrisVerification from './components/TetrisVerification'
 import pluckUrl from '../assets/gameboy-pluck.mp3'
 import CornerLogo from './components/CornerLogo'
 import SaaSSelection from './components/SaaS/SaaSSelection'
+import ThemeSelection from './components/Themes/ThemeSelection'
 import UserMenu from './components/UserMenu'
 import BoomboxPlayer from './components/BoomboxPlayer'
 import { AudioProvider } from './audio/AudioContext'
@@ -22,6 +23,7 @@ const VIEWS = {
   DASHBOARD: 'dashboard',
   SAAS_SELECT: 'saas-select',
   HUBSPOT_SETUP: 'hubspot-setup',
+  THEME_SELECT: 'theme-select',
 }
 
 export default function App() {
@@ -175,6 +177,9 @@ export default function App() {
               playPlunk()
               if (app.id === 'hubspot') {
                 setView(VIEWS.HUBSPOT_SETUP)
+              } else {
+                // For now, after any non-HubSpot SaaS selection proceed directly to theme selection.
+                setView(VIEWS.THEME_SELECT)
               }
             }}
           />
@@ -199,8 +204,34 @@ export default function App() {
             user={user}
             playPlunk={playPlunk}
             onBack={() => setView(VIEWS.SAAS_SELECT)}
-            onSkip={() => setView(VIEWS.SAAS_SELECT)}
-            onValidated={() => setView(VIEWS.SAAS_SELECT)}
+            onSkip={() => setView(VIEWS.THEME_SELECT)}
+            onValidated={() => setView(VIEWS.THEME_SELECT)}
+          />
+          <BoomboxPlayer />
+        </AudioProvider>
+      )
+    case VIEWS.THEME_SELECT:
+      return (
+        <AudioProvider>
+          <CornerLogo onClick={() => setView(VIEWS.LANDING)} />
+          {renderBackToTop}
+          <UserMenu
+            user={user}
+            onSignOut={handleSignOut}
+            playPlunk={playPlunk}
+            onNav={(target) => {
+              if (target === 'setup') return;
+              console.log('Navigate to section:', target)
+            }}
+          />
+          <ThemeSelection
+            playPlunk={playPlunk}
+            onSelect={(theme) => {
+              console.log('Selected theme', theme)
+              // Future: persist theme, then navigate to next flow (dashboard?).
+              playPlunk()
+            }}
+            onBack={() => setView(VIEWS.SAAS_SELECT)}
           />
           <BoomboxPlayer />
         </AudioProvider>

@@ -1,14 +1,16 @@
 const { createClient } = require('./hubspotClient')
 const { createTools } = require('./toolsFactory')
 
-function createOrchestrator({ apiToken }) {
+function createOrchestrator({ apiToken } = {}) {
   const client = createClient({ apiToken })
+  if (apiToken) client.setToken(apiToken)
   const tools = createTools(client)
 
   return {
     // Dynamically create a tools instance for a given token (per-user private app token)
     withToken(token) {
-      const userClient = createClient({ apiToken: token })
+      const userClient = createClient({})
+      userClient.setToken(token)
       return createTools(userClient)
     },
 

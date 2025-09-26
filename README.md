@@ -25,6 +25,7 @@ npm test
 Notes
 
 - This is a local simulation only and does not call HubSpot APIs. It is structured so real API calls could be swapped into the SimulationEngine.
+ - Per-user HubSpot Private App tokens are now supported & encrypted at rest. See `docs/integrations-hubspot-tokens.md`.
 
 ## Tetris Verification Mini-Game Modes
 
@@ -95,6 +96,8 @@ DB_USER=your_user
 DB_PASS=your_pass
 DB_NAME=simcrm
 DB_PORT=3306
+TOKEN_ENC_SECRET=32-byte-random-secret-value
+# HUBSPOT_API_TOKEN (optional legacy global token; not required)
 ```
 
 Optional override for JSON dev fallback location:

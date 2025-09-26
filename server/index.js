@@ -7,8 +7,8 @@ const { pool } = require('./db')
 const axios = require('axios')
 
 const PORT = process.env.PORT || 4000
-const API_TOKEN = process.env.HUBSPOT_API_TOKEN
-if (!API_TOKEN) console.warn('Warning: HUBSPOT_API_TOKEN not set. Server will throw on API calls.')
+const API_TOKEN = process.env.HUBSPOT_API_TOKEN // optional now
+if (!API_TOKEN) console.log('Info: HUBSPOT_API_TOKEN not set at startup (expected: per-user tokens will be used).')
 
 const orchestrator = createOrchestrator({ apiToken: API_TOKEN })
 
@@ -69,23 +69,26 @@ app.post('/api/create-task', async (req, res) => {
 app.get('/api/hubspot/keys', async (req, res) => {
   try {
     const userId = req.query.userId
+    const saas = req.query.saas || 'hubspot'
     if (!userId) return res.status(400).json({ ok:false, error: 'userId required' })
-    const keys = await listKeys(userId)
+    const keys = await listKeys(userId, { saas })
     res.json({ ok: true, keys })
   } catch (e) {
-    res.status(500).json({ ok: false, error: e.message })
+    const msg = e.message.includes('TOKEN_ENC_SECRET') ? 'Server missing TOKEN_ENC_SECRET; cannot decrypt tokens.' : e.message
+    res.status(500).json({ ok: false, error: msg })
   }
 })
 
 app.post('/api/hubspot/keys', async (req, res) => {
   try {
-    const { userId, label, token } = req.body || {}
+    const { userId, label, token, saas = 'hubspot' } = req.body || {}
     if (!userId) return res.status(400).json({ ok:false, error: 'userId required' })
     if (!label || !token) return res.status(400).json({ ok:false, error: 'label and token required' })
-    const key = await createKey({ userId, label, token })
+    const key = await createKey({ userId, label, token, saas })
     res.json({ ok: true, key })
   } catch (e) {
-    res.status(500).json({ ok: false, error: e.message })
+    const msg = e.message.includes('TOKEN_ENC_SECRET') ? 'Server missing TOKEN_ENC_SECRET; cannot encrypt token.' : e.message
+    res.status(500).json({ ok: false, error: msg })
   }
 })
 
