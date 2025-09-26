@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { useAudio } from '../audio/AudioContext'
 
 // Collapsible 8-bit styled audio player (initial shell only)
@@ -6,6 +6,43 @@ export default function BoomboxPlayer() {
   const audio = useAudio()
   if (!audio) return null
   const { expanded, toggleExpanded, isPlaying, togglePlay, track, volume, changeVolume, next, prev, playlist, index } = audio
+
+  const viewportRef = useRef(null)
+  const trackRef = useRef(null)
+
+  // Measure track text width vs viewport to decide if we need scrolling and set distance/duration
+  useEffect(() => {
+    if (!expanded) return; // only when visible
+    const el = trackRef.current
+    const vp = viewportRef.current
+    if (!el || !vp) return
+
+    const apply = () => {
+      // Reset any prior animation class to re-trigger
+      el.classList.remove('scrolling')
+      el.style.removeProperty('--scroll-distance')
+      el.style.removeProperty('--scroll-duration')
+
+      // Force reflow so removing class takes effect before re-adding (ensures restart)
+      void el.offsetWidth
+      const textWidth = el.scrollWidth
+      const viewportWidth = vp.clientWidth
+      const distance = textWidth - viewportWidth
+      if (distance > 0) {
+        // Scroll distance so last letter becomes flush right at end state
+        el.style.setProperty('--scroll-distance', distance + 'px')
+        // Speed ~40px/sec with bounds 6s-28s
+        const duration = Math.min(28, Math.max(6, distance / 40))
+        el.style.setProperty('--scroll-duration', duration + 's')
+        // Defer adding class to next frame for smoother restart
+        requestAnimationFrame(() => el.classList.add('scrolling'))
+      }
+    }
+
+    apply()
+    window.addEventListener('resize', apply)
+    return () => window.removeEventListener('resize', apply)
+  }, [track?.title, expanded])
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -31,8 +68,8 @@ export default function BoomboxPlayer() {
       {expanded && (
         <div className="boombox-body">
           <div className="boombox-screen">
-            <div className="boombox-track-viewport">
-              <span className="boombox-track" aria-live="polite">{track?.title || 'NO TRACK LOADED'}</span>
+            <div className="boombox-track-viewport" ref={viewportRef}>
+              <span ref={trackRef} className="boombox-track" aria-live="polite">{track?.title || 'NO TRACK LOADED'}</span>
             </div>
           </div>
           <div className="boombox-controls">

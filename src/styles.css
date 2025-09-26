@@ -561,13 +561,15 @@
 	height: 44px;
 }
 .boombox-track-viewport { position: relative; width: 100%; overflow: hidden; }
-.boombox-track {
-	white-space: nowrap;
-	animation: trackScroll 14s linear infinite;
-	display: inline-block;
-	padding-right: 40px;
+.boombox-track { white-space: nowrap; display: inline-block; will-change: transform; }
+/* Scrolling behavior only applied when JS adds .scrolling & sets --scroll-distance */
+.boombox-track.scrolling { 
+  animation: boomboxMarquee var(--scroll-duration,12s) linear forwards;
 }
-@keyframes trackScroll { 0% { transform: translateX(0); } 100% { transform: translateX(-60%); } }
+@keyframes boomboxMarquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(calc(-1 * var(--scroll-distance, 0px))); }
+}
 .boombox-controls { display: flex; align-items: center; gap: 10px; justify-content: space-between; }
 .boombox-volume { display: flex; align-items: center; gap: 8px; }
 .bb-vol-label { font-size: 10px; letter-spacing: .08em; color: #2d3e2d; }
@@ -594,3 +596,70 @@
 	.boombox-body { width: 260px; }
 	.bb-vol { width: 120px; }
 }
+
+/* HubSpot Setup Page */
+.hubspot-setup { 
+	width: min(820px, 94vw);
+	margin: 140px auto 200px; 
+	display: grid; 
+	gap: 28px; 
+	justify-items: center; 
+	text-align: center;
+	color: #1e3a5f;
+}
+.hs-setup-title { margin:0; font-size: 32px; letter-spacing: 0.14em; text-shadow: 0 2px 0 #ffffff, 0 4px 0 rgba(0,0,0,0.18); }
+.hs-setup-sub { margin:0; font-size:12px; letter-spacing:0.08em; }
+.hs-setup-player { margin:0; font-size:11px; letter-spacing:0.12em; opacity:0.8 }
+.hs-config-head { margin:14px 0 0; font-size:16px; letter-spacing:0.18em; }
+
+.hs-section-label { margin:0 0 12px; font-size:12px; letter-spacing:0.14em; text-align:left; }
+.hs-key-section { width:100%; background:#8fbc8f; border:3px solid #2d3e2d; border-radius:10px; padding:18px 24px 22px; display:grid; gap:16px; }
+.hs-key-row { display:flex; gap:16px; align-items:center; }
+.hs-key-select { flex:1; padding:14px 12px; font-size:12px; background:#cfe7cf; border:3px solid #2d3e2d; border-radius:6px; font-family:'Press Start 2P',cursive; }
+.hs-add-key { padding:12px 14px; font-size:12px; background:#6c7b7f; border:3px solid #2d3e2d; color:#fff; cursor:pointer; border-radius:6px; box-shadow:0 4px 0 rgba(0,0,0,0.35); }
+.hs-add-key:hover { background:#8b0000; }
+.hs-add-form { display:grid; gap:12px; text-align:left; }
+.hs-new-label, .hs-new-value { font-family:'Press Start 2P',cursive; font-size:11px; padding:10px 12px; border:3px solid #2d3e2d; background:#cfe7cf; border-radius:6px; }
+.hs-new-value { resize:vertical; }
+.hs-add-actions { display:flex; gap:16px; justify-content:flex-end; }
+
+.hs-instructions { width:100%; text-align:left; background:#fff; padding:4px 4px 8px; }
+.hs-steps { margin:0; padding-left:20px; display:grid; gap:10px; font-size:12px; }
+
+.hs-scopes { width:100%; background:#8fbc8f; border:3px solid #2d3e2d; border-radius:10px; padding:6px 10px 14px; display:grid; gap:12px; }
+.hs-scopes-toggle { background:transparent; border:none; padding:10px 8px; font-family:'Press Start 2P',cursive; font-size:12px; display:flex; align-items:center; justify-content:space-between; cursor:pointer; }
+.hs-scope-list { list-style:none; margin:0; padding:0 4px; font-size:11px; display:grid; gap:6px; text-align:left; }
+.hs-scope-list li { background:#cfe7cf; border:2px solid #2d3e2d; padding:6px 8px; border-radius:4px; }
+
+.hs-error { color:#8b0000; font-size:12px; margin:0; }
+.hs-success { color:#006400; font-size:12px; margin:0; }
+
+.hs-actions { display:flex; gap:18px; justify-content:center; }
+.hs-connect { min-width:260px; }
+.hs-skip { min-width:200px; }
+.hs-back-link { margin:18px 0 0; font-size:11px; }
+.hs-back-btn { background:none; border:none; color:#1a3b8d; cursor:pointer; font-family:'Press Start 2P',cursive; font-size:11px; }
+.hs-back-btn:hover { text-decoration:underline; }
+
+@media (max-width: 740px) {
+	.hubspot-setup { margin-top: 120px; gap:22px; }
+	.hs-key-row { flex-direction:column; align-items:stretch; }
+	.hs-add-key { width:100%; }
+	.hs-actions { flex-direction:column; }
+	.hs-connect, .hs-skip { width:100%; min-width:unset; }
+}
+
+/* Konami / Contra Easter Egg Overlay */
+.konami-overlay {
+	position: fixed;
+	inset: 0;
+	background: #000;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 9999; /* above everything */
+	animation: konamiFadeIn 220ms steps(8,end) both;
+}
+@keyframes konamiFadeIn { from { opacity: 0 } to { opacity: 1 } }
+.konami-image { max-width: 80vw; max-height: 80vh; image-rendering: pixelated; }
+.konami-loading { position: absolute; bottom: 8%; font-size: 12px; color: #fff; letter-spacing: 0.2em; }

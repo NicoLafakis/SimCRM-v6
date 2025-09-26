@@ -102,3 +102,25 @@ Optional override for JSON dev fallback location:
 DEV_AUTH_DATA_FILE=absolute\path\to\dev-auth.json
 ```
 
+## Production Data Policy (No Dummy / Placeholder Data)
+
+All new code MUST avoid the use of fake, dummy, sample, example, or placeholder values in any execution path that impacts:
+- Authentication / user identity
+- HubSpot credential storage or validation
+- Database persistence
+- External API calls
+
+Rules:
+1. Do not auto-fallback to synthetic user IDs (e.g. `demo-user`). A real authenticated `user.id` is required; otherwise the request fails fast (400).
+2. No length-based token heuristics; validation must rely on a real HubSpot API response.
+3. Test helpers must be clearly isolated (unit tests only) and never leak mock tokens or stubbed identifiers into runtime modules.
+4. Encrypted secrets remain encrypted at rest; never log decrypted tokens.
+5. Any temporary instrumentation must be removed before commit (no `console.log` of secrets, no sandbox keys).
+6. If a required runtime value (env var, user id, token) is absent, abort with an explicit error; do not silently substitute.
+
+Contribution Gate:
+Before merging, review changes for: (a) accidental reintroduction of placeholders, (b) broad try/catch swallowing production errors, (c) mock-only flows.
+
+Violation Handling:
+A found violation triggers immediate PR block until remediated. Repeat issues require adding automated lint/AST rule.
+

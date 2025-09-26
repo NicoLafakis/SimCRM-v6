@@ -6,6 +6,12 @@ function createOrchestrator({ apiToken }) {
   const tools = createTools(client)
 
   return {
+    // Dynamically create a tools instance for a given token (per-user private app token)
+    withToken(token) {
+      const userClient = createClient({ apiToken: token })
+      return createTools(userClient)
+    },
+
     // High-level: create contact + company and associate
     createContactWithCompany: async ({ contactProps, companyProps }) => {
       const company = await tools.companies.create(companyProps)

@@ -1,3 +1,4 @@
+import HubSpotSetup from './components/HubSpotSetup'
 import React, { useMemo, useState, useCallback, useEffect } from 'react'
 import LandingPage from './components/LandingPage'
 import AuthPage from './components/AuthPage'
@@ -10,6 +11,7 @@ import SaaSSelection from './components/SaaS/SaaSSelection'
 import UserMenu from './components/UserMenu'
 import BoomboxPlayer from './components/BoomboxPlayer'
 import { AudioProvider } from './audio/AudioContext'
+import KonamiEasterEgg from './components/KonamiEasterEgg'
 
 const VIEWS = {
   LANDING: 'landing',
@@ -19,6 +21,7 @@ const VIEWS = {
   VERIFY_GAME: 'verify-game',
   DASHBOARD: 'dashboard',
   SAAS_SELECT: 'saas-select',
+  HUBSPOT_SETUP: 'hubspot-setup',
 }
 
 export default function App() {
@@ -153,6 +156,7 @@ export default function App() {
     case VIEWS.SAAS_SELECT:
       return (
         <AudioProvider>
+          <KonamiEasterEgg />
           <CornerLogo onClick={() => setView(VIEWS.LANDING)} />
           {renderBackToTop}
           <UserMenu
@@ -169,7 +173,34 @@ export default function App() {
             onSelect={(app) => {
               console.log('Selected app', app)
               playPlunk()
+              if (app.id === 'hubspot') {
+                setView(VIEWS.HUBSPOT_SETUP)
+              }
             }}
+          />
+          <BoomboxPlayer />
+        </AudioProvider>
+      )
+    case VIEWS.HUBSPOT_SETUP:
+      return (
+        <AudioProvider>
+          <CornerLogo onClick={() => setView(VIEWS.LANDING)} />
+          {renderBackToTop}
+          <UserMenu
+            user={user}
+            onSignOut={handleSignOut}
+            playPlunk={playPlunk}
+            onNav={(target) => {
+              if (target === 'setup') return;
+              console.log('Navigate to section:', target)
+            }}
+          />
+          <HubSpotSetup
+            user={user}
+            playPlunk={playPlunk}
+            onBack={() => setView(VIEWS.SAAS_SELECT)}
+            onSkip={() => setView(VIEWS.SAAS_SELECT)}
+            onValidated={() => setView(VIEWS.SAAS_SELECT)}
           />
           <BoomboxPlayer />
         </AudioProvider>
