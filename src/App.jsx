@@ -6,6 +6,10 @@ import VerificationIntro from './components/VerificationIntro'
 import TetrisVerification from './components/TetrisVerification'
 import pluckUrl from '../assets/gameboy-pluck.mp3'
 import CornerLogo from './components/CornerLogo'
+import SaaSSelection from './components/SaaS/SaaSSelection'
+import UserMenu from './components/UserMenu'
+import BoomboxPlayer from './components/BoomboxPlayer'
+import { AudioProvider } from './audio/AudioContext'
 
 const VIEWS = {
   LANDING: 'landing',
@@ -14,6 +18,7 @@ const VIEWS = {
   VERIFY_INTRO: 'verify-intro',
   VERIFY_GAME: 'verify-game',
   DASHBOARD: 'dashboard',
+  SAAS_SELECT: 'saas-select',
 }
 
 export default function App() {
@@ -60,7 +65,7 @@ export default function App() {
     if (!pendingUser) return
     setUser(pendingUser)
     setPendingUser(null)
-    setView(VIEWS.DASHBOARD)
+    setView(VIEWS.SAAS_SELECT)
   }, [pendingUser])
 
   const handleSignOut = useCallback(() => {
@@ -103,7 +108,8 @@ export default function App() {
             onLogin={(u) => {
               playPlunk()
               setUser(u)
-              setView(VIEWS.DASHBOARD)
+              // Redirect directly to SaaS selection after login
+              setView(VIEWS.SAAS_SELECT)
             }}
           />
         </>
@@ -143,6 +149,30 @@ export default function App() {
             }}
           />
         </>
+      )
+    case VIEWS.SAAS_SELECT:
+      return (
+        <AudioProvider>
+          <CornerLogo onClick={() => setView(VIEWS.LANDING)} />
+          {renderBackToTop}
+          <UserMenu
+            user={user}
+            onSignOut={handleSignOut}
+            playPlunk={playPlunk}
+            onNav={(target) => {
+              if (target === 'setup') return;
+              console.log('Navigate to section:', target)
+            }}
+          />
+          <SaaSSelection
+            playPlunk={playPlunk}
+            onSelect={(app) => {
+              console.log('Selected app', app)
+              playPlunk()
+            }}
+          />
+          <BoomboxPlayer />
+        </AudioProvider>
       )
     default:
       return <LandingPage onContinue={handleLandingContinue} />
