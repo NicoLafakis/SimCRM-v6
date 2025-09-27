@@ -3,6 +3,16 @@
 ## Overview
 SimCRM is a HubSpot CRM simulation tool with dual architecture: a React frontend simulation and an Express backend with real HubSpot API integration. The simulation engine mimics CRM workflows without API calls, while the server provides production-ready HubSpot integration.
 
+### Current Onboarding Flow (Post-Auth)
+Sequential configuration pipeline (each step has back navigation + pluck SFX):
+1. SaaS Selection (HubSpot path triggers token setup)
+2. HubSpot Setup (token validation) when SaaS = HubSpot
+3. Theme Selection (12-tile 3x4)
+4. Distribution Method Selection (9-tile 3x3, CUSTOM centered)
+5. Scenario Selection (2 tiles: B2B, B2C)
+
+Selections are presently ephemeral (not persisted). Future persistence will store per-user simulation profile to seed orchestrated job creation.
+
 ## Architecture
 
 ### Frontend Simulation (`src/simulation/SimulationEngine.js`)
@@ -123,3 +133,33 @@ All tools follow consistent pattern: `create()`, `get()`, `update()`, `delete()`
 
 ### State Synchronization
 Frontend and backend operate independently - no shared state. Backend is stateless, frontend maintains simulation state in `SimulationEngine` instance.
+
+## New Configuration Layers
+
+### Distribution Methods
+`src/components/Distribution/distributionOptions.js` defines temporal creation curves (linear, bell curve, front/back-loaded, surge variants, weekend surge, seasonal). Currently UI only; will feed timestamp generation in job queue phase.
+
+### Scenarios
+`src/components/Scenario/scenarioOptions.js` provides B2B vs B2C archetypes. Planned parameterization:
+- Lead volume multiplier
+- Sales cycle duration (B2B longer)
+- Funnel stage attrition percentages
+- Deal size distribution characteristics
+- Contact:Company ratio
+
+Will map into orchestrator modifiers (record count scaling, delay curve multipliers, probability adjustments) once job queue is active.
+
+### Planned Persistence
+Add either JSON column on `users` or a new `user_simulation_profiles` table to store theme, distribution, scenario, and future advanced knobs. Must follow migration conventions; no sensitive data (encryption not required).
+
+## Roadmap Snapshot
+1. Migrations: `simulations` table + optional profile table.
+2. Integrate BullMQ (Redis) for delayed job scheduling (see `docs/job-queue-architecture.md`).
+3. Implement distribution -> timestamp expansion function (returns array of scheduled times for N records between start/end).
+4. Scenario parameter bundle feeding record generation & HubSpot object composition.
+5. Persist user selections & show summary panel after scenario selection.
+6. API: create/list/get simulations + progress endpoints.
+7. Worker process (`worker.js`) executes jobs, updates progress, sets completion/failure.
+8. Frontend progress dashboard (poll/SSE/WebSocket) with live counts.
+
+All UI/logic changes must honor existing color palette, typography, and interaction feedback (sound + tile active states).

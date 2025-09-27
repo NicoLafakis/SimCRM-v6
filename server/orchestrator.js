@@ -1,5 +1,17 @@
 const { createClient } = require('./hubspotClient')
 const { createTools } = require('./toolsFactory')
+const { Queue } = require('bullmq')
+const { expandDistribution } = require('./distributionUtil')
+const Redis = require('redis')
+const knexConfig = require('../knexfile')
+const Knex = require('knex')
+
+// Lazily create Redis connection options (BullMQ will manage its own ioredis internally if given connection params)
+function getQueue(connectionOpts = {}) {
+  return new Queue('simulation-jobs', { connection: connectionOpts })
+}
+
+const knex = Knex(knexConfig.development || knexConfig)
 
 function createOrchestrator({ apiToken } = {}) {
   const client = createClient({ apiToken })
@@ -123,6 +135,46 @@ function createOrchestrator({ apiToken } = {}) {
 
     // pass-through for tools
     tools,
+
+    /**
+     * startSimulation(simulationId)
+     * Reads simulation record, expands distribution into per-record timestamps, enqueues delayed jobs.
+     */
+    startSimulation: async (simulationId) => {
+      // Load simulation row
+      const sim = await knex('simulations').where({ id: simulationId }).first()
+      if (!sim) throw new Error('Simulation not found')
+      if (sim.status !== 'QUEUED') throw new Error('Simulation not in QUEUED state')
+
+      const now = Date.now()
+      const timestamps = expandDistribution(
+        sim.distribution_method,
+        sim.total_records,
+        sim.start_time,
+        sim.end_time
+      )
+
+      const queue = getQueue()
+      let scheduled = 0
+      for (let i = 0; i < timestamps.length; i++) {
+        const ts = timestamps[i]
+        const delay = Math.max(0, ts - now)
+        await queue.add('create-record', {
+          simulationId,
+          index: i + 1,
+          scenario: sim.scenario,
+          distribution_method: sim.distribution_method,
+        }, { delay })
+        scheduled++
+      }
+
+      await knex('simulations').where({ id: simulationId }).update({
+        status: 'RUNNING',
+        updated_at: Date.now()
+      })
+
+      return { scheduled }
+    },
   }
 }
 

@@ -2,6 +2,24 @@
 
 Lightweight React + Vite app that simulates HubSpot CRM activity by creating contacts, companies, associations, notes, deals and progressing them through marketing and sales stages.
 
+## Onboarding Configuration Flow (Current UI)
+
+After authentication the user is guided through a linear configuration pipeline:
+
+1. SaaS Selection (HubSpot path enables token setup)
+2. HubSpot Token Setup & Validation (only when HubSpot chosen)
+3. Theme Selection (12-tile grid)
+4. Distribution Method Selection (9-tile grid; CUSTOM center)
+5. Scenario Selection (B2B vs B2C)
+
+Each step includes back navigation and an 8‑bit pluck sound for interactions. Selections are ephemeral (not persisted yet). Upcoming work: persist these choices and surface a summary before launching simulations.
+
+Scenario & distribution metadata live in:
+* `src/components/Distribution/distributionOptions.js`
+* `src/components/Scenario/scenarioOptions.js`
+
+Planned semantics (scenarios) include: lead volume multiplier, sales cycle duration, funnel attrition, deal size distribution, contact:company ratio. These will feed the job queue scheduling + record creation layer (see `docs/job-queue-architecture.md`).
+
 Getting started
 
 1. Install dependencies:
@@ -26,6 +44,8 @@ Notes
 
 - This is a local simulation only and does not call HubSpot APIs. It is structured so real API calls could be swapped into the SimulationEngine.
  - Per-user HubSpot Private App tokens are now supported & encrypted at rest. See `docs/integrations-hubspot-tokens.md`.
+ - Upcoming: `docs/scenarios.md` (in progress) will describe B2B/B2C parameterization once persistence + job queue integration lands.
+ - Job Queue groundwork added: `simulations` table migration, BullMQ queue (`simulation-jobs`), `server/worker.js` consumer, and simulation API endpoints (`/api/simulations`).
 
 ## Tetris Verification Mini-Game Modes
 

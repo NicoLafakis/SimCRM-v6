@@ -65,6 +65,72 @@ app.post('/api/create-task', async (req, res) => {
   }
 })
 
+// ---- Simulation APIs ----
+const { v4: uuidv4 } = require('uuid')
+const knexConfig = require('../knexfile')
+const Knex = require('knex')
+const knex = Knex(knexConfig.development || knexConfig)
+
+app.post('/api/simulations', async (req, res) => {
+  try {
+    const { userId, scenario, distributionMethod, totalRecords, startTime, endTime } = req.body || {}
+    if (!userId) return res.status(400).json({ ok:false, error:'userId required' })
+    if (!scenario) return res.status(400).json({ ok:false, error:'scenario required' })
+    if (!distributionMethod) return res.status(400).json({ ok:false, error:'distributionMethod required' })
+    if (!totalRecords || totalRecords <= 0) return res.status(400).json({ ok:false, error:'totalRecords > 0 required' })
+    const now = Date.now()
+    const sim = {
+      id: uuidv4(),
+      user_id: userId,
+      status: 'QUEUED',
+      scenario,
+      distribution_method: distributionMethod,
+      total_records: totalRecords,
+      records_processed: 0,
+      start_time: startTime || now,
+      end_time: endTime || (now + 60 * 60 * 1000),
+      created_at: now,
+      updated_at: now,
+    }
+    await knex('simulations').insert(sim)
+    res.json({ ok: true, simulation: sim })
+  } catch (e) {
+    res.status(500).json({ ok:false, error: e.message })
+  }
+})
+
+app.post('/api/simulations/:id/start', async (req, res) => {
+  try {
+    const { id } = req.params
+    const out = await orchestrator.startSimulation(id)
+    res.json({ ok: true, ...out })
+  } catch (e) {
+    res.status(400).json({ ok:false, error: e.message })
+  }
+})
+
+app.get('/api/simulations', async (req, res) => {
+  try {
+    const userId = req.query.userId
+    if (!userId) return res.status(400).json({ ok:false, error: 'userId required' })
+    const rows = await knex('simulations').where({ user_id: userId }).orderBy('created_at', 'desc').limit(50)
+    res.json({ ok: true, simulations: rows })
+  } catch (e) {
+    res.status(500).json({ ok:false, error: e.message })
+  }
+})
+
+app.get('/api/simulations/:id', async (req, res) => {
+  try {
+    const { id } = req.params
+    const row = await knex('simulations').where({ id }).first()
+    if (!row) return res.status(404).json({ ok:false, error: 'not found' })
+    res.json({ ok: true, simulation: row })
+  } catch (e) {
+    res.status(500).json({ ok:false, error: e.message })
+  }
+})
+
 // HubSpot API key management (user scoping placeholder: using playerName or provided userId from body)
 app.get('/api/hubspot/keys', async (req, res) => {
   try {
