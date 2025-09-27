@@ -11,6 +11,7 @@ import SaaSSelection from './components/SaaS/SaaSSelection'
 import ThemeSelection from './components/Themes/ThemeSelection'
 import DistributionSelection from './components/Distribution/DistributionSelection'
 import ScenarioSelection from './components/Scenario/ScenarioSelection'
+import SimulationProgress from './components/Simulation/SimulationProgress'
 import UserMenu from './components/UserMenu'
 import BoomboxPlayer from './components/BoomboxPlayer'
 import { AudioProvider } from './audio/AudioContext'
@@ -28,6 +29,7 @@ const VIEWS = {
   THEME_SELECT: 'theme-select',
   DISTRIBUTION_SELECT: 'distribution-select',
   SCENARIO_SELECT: 'scenario-select',
+  SIM_PROGRESS: 'sim-progress',
 }
 
 export default function App() {
@@ -36,6 +38,8 @@ export default function App() {
   const [pendingUser, setPendingUser] = useState(null)
   const audio = useMemo(() => new Audio(pluckUrl), [])
   const [scrolled, setScrolled] = useState(false)
+  const [pendingSelections, setPendingSelections] = useState({ theme:null, distribution:null, scenario:null })
+  const [activeSimulationId, setActiveSimulationId] = useState(null)
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 120)
@@ -233,6 +237,7 @@ export default function App() {
             onSelect={(theme) => {
               console.log('Selected theme', theme)
               playPlunk()
+              setPendingSelections(s => ({ ...s, theme }))
               setView(VIEWS.DISTRIBUTION_SELECT)
             }}
             onBack={() => setView(VIEWS.SAAS_SELECT)}
@@ -261,6 +266,7 @@ export default function App() {
               playPlunk()
               console.log('Selected distribution method', method)
               // Future: persist distribution method
+              setPendingSelections(s => ({ ...s, distribution: method.id }))
               setView(VIEWS.SCENARIO_SELECT)
             }}
           />
@@ -284,11 +290,53 @@ export default function App() {
           <ScenarioSelection
             playPlunk={playPlunk}
             onBack={() => setView(VIEWS.DISTRIBUTION_SELECT)}
-            onSelect={(scenario) => {
+            onSelect={async (scenario) => {
               playPlunk()
               console.log('Selected scenario', scenario)
-              // Future: persist scenario & proceed to simulation dashboard
+              setPendingSelections(s => ({ ...s, scenario: scenario.id }))
+              try {
+                const createResp = await fetch('/api/simulations', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                    userId: user?.id,
+                    scenario: scenario.id,
+                    distributionMethod: pendingSelections.distribution || 'linear',
+                    totalRecords: 200,
+                  })
+                }).then(r => r.json())
+                if (!createResp.ok) throw new Error(createResp.error || 'create failed')
+                const simId = createResp.simulation.id
+                setActiveSimulationId(simId)
+                const startResp = await fetch(`/api/simulations/${simId}/start`, { method:'POST' }).then(r => r.json())
+                if (!startResp.ok) throw new Error(startResp.error || 'start failed')
+                setView(VIEWS.SIM_PROGRESS)
+              } catch (e) {
+                console.warn('Simulation start error:', e.message)
+              }
             }}
+          />
+          <BoomboxPlayer />
+        </AudioProvider>
+      )
+    case VIEWS.SIM_PROGRESS:
+      return (
+        <AudioProvider>
+          <CornerLogo onClick={() => setView(VIEWS.LANDING)} />
+          {renderBackToTop}
+          <UserMenu
+            user={user}
+            onSignOut={handleSignOut}
+            playPlunk={playPlunk}
+            onNav={(target) => {
+              if (target === 'setup') return;
+              console.log('Navigate to section:', target)
+            }}
+          />
+          <SimulationProgress
+            playPlunk={playPlunk}
+            simulationId={activeSimulationId}
+            onBack={() => { playPlunk(); setView(VIEWS.SCENARIO_SELECT) }}
           />
           <BoomboxPlayer />
         </AudioProvider>

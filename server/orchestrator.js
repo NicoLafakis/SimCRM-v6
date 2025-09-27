@@ -2,6 +2,7 @@ const { createClient } = require('./hubspotClient')
 const { createTools } = require('./toolsFactory')
 const { Queue } = require('bullmq')
 const { expandDistribution } = require('./distributionUtil')
+const { getScenarioParameters } = require('./scenarioParameters')
 const Redis = require('redis')
 const knexConfig = require('../knexfile')
 const Knex = require('knex')
@@ -144,12 +145,22 @@ function createOrchestrator({ apiToken } = {}) {
       // Load simulation row
       const sim = await knex('simulations').where({ id: simulationId }).first()
       if (!sim) throw new Error('Simulation not found')
+      if (sim.status === 'RUNNING') {
+        return { scheduled: 0, alreadyRunning: true }
+      }
       if (sim.status !== 'QUEUED') throw new Error('Simulation not in QUEUED state')
+
+      const scenarioParams = getScenarioParameters(sim.scenario)
+      // Adjust total count via scenario multiplier (rounded)
+      let effectiveTotal = sim.total_records
+      if (scenarioParams?.leadVolumeMultiplier) {
+        effectiveTotal = Math.max(1, Math.round(effectiveTotal * scenarioParams.leadVolumeMultiplier))
+      }
 
       const now = Date.now()
       const timestamps = expandDistribution(
         sim.distribution_method,
-        sim.total_records,
+        effectiveTotal,
         sim.start_time,
         sim.end_time
       )
@@ -161,9 +172,15 @@ function createOrchestrator({ apiToken } = {}) {
         const delay = Math.max(0, ts - now)
         await queue.add('create-record', {
           simulationId,
+          user_id: sim.user_id,
           index: i + 1,
           scenario: sim.scenario,
           distribution_method: sim.distribution_method,
+          scenario_params: scenarioParams ? {
+            avgSalesCycleDays: scenarioParams.avgSalesCycleDays,
+            dealWinRateBase: scenarioParams.dealWinRateBase,
+            contactToCompanyRatio: scenarioParams.contactToCompanyRatio,
+          } : null,
         }, { delay })
         scheduled++
       }
@@ -173,7 +190,7 @@ function createOrchestrator({ apiToken } = {}) {
         updated_at: Date.now()
       })
 
-      return { scheduled }
+      return { scheduled, effectiveTotal }
     },
   }
 }

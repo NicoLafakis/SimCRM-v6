@@ -75,20 +75,34 @@ app.post('/api/simulations', async (req, res) => {
   try {
     const { userId, scenario, distributionMethod, totalRecords, startTime, endTime } = req.body || {}
     if (!userId) return res.status(400).json({ ok:false, error:'userId required' })
-    if (!scenario) return res.status(400).json({ ok:false, error:'scenario required' })
+    const scenarioLc = (scenario||'').toLowerCase()
+    const allowedScenarios = ['b2b','b2c']
+    if (!allowedScenarios.includes(scenarioLc)) return res.status(400).json({ ok:false, error:'scenario invalid (b2b|b2c)' })
     if (!distributionMethod) return res.status(400).json({ ok:false, error:'distributionMethod required' })
-    if (!totalRecords || totalRecords <= 0) return res.status(400).json({ ok:false, error:'totalRecords > 0 required' })
+    let total = parseInt(totalRecords,10)
+    if (isNaN(total) || total <= 0) return res.status(400).json({ ok:false, error:'totalRecords > 0 required' })
+    const MAX_RECORDS = 50_000
+    if (total > MAX_RECORDS) total = MAX_RECORDS
     const now = Date.now()
+    const start = startTime ? parseInt(startTime,10) : now
+    const end = endTime ? parseInt(endTime,10) : (start + 60*60*1000)
+    if (isNaN(start) || isNaN(end)) return res.status(400).json({ ok:false, error:'startTime/endTime invalid' })
+    if (end <= start) return res.status(400).json({ ok:false, error:'endTime must be greater than startTime' })
+    const MAX_HORIZON_MS = 1000*60*60*24*7 // 7 days
+    if ((end - start) > MAX_HORIZON_MS) return res.status(400).json({ ok:false, error:'simulation horizon exceeds 7 days' })
+    const methodSanitized = String(distributionMethod).toLowerCase()
+    const allowedMethods = ['linear','bell_curve','front_loaded','back_loaded','surge_mid']
+    if (!allowedMethods.includes(methodSanitized)) return res.status(400).json({ ok:false, error:'distributionMethod invalid' })
     const sim = {
       id: uuidv4(),
       user_id: userId,
       status: 'QUEUED',
-      scenario,
-      distribution_method: distributionMethod,
-      total_records: totalRecords,
+      scenario: scenarioLc,
+      distribution_method: methodSanitized,
+      total_records: total,
       records_processed: 0,
-      start_time: startTime || now,
-      end_time: endTime || (now + 60 * 60 * 1000),
+      start_time: start,
+      end_time: end,
       created_at: now,
       updated_at: now,
     }
