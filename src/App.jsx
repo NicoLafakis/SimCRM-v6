@@ -9,6 +9,8 @@ import pluckUrl from '../assets/gameboy-pluck.mp3'
 import CornerLogo from './components/CornerLogo'
 import SaaSSelection from './components/SaaS/SaaSSelection'
 import ThemeSelection from './components/Themes/ThemeSelection'
+import DistributionSelection from './components/Distribution/DistributionSelection'
+import ScenarioSelection from './components/Scenario/ScenarioSelection'
 import UserMenu from './components/UserMenu'
 import BoomboxPlayer from './components/BoomboxPlayer'
 import { AudioProvider } from './audio/AudioContext'
@@ -24,6 +26,8 @@ const VIEWS = {
   SAAS_SELECT: 'saas-select',
   HUBSPOT_SETUP: 'hubspot-setup',
   THEME_SELECT: 'theme-select',
+  DISTRIBUTION_SELECT: 'distribution-select',
+  SCENARIO_SELECT: 'scenario-select',
 }
 
 export default function App() {
@@ -228,10 +232,63 @@ export default function App() {
             playPlunk={playPlunk}
             onSelect={(theme) => {
               console.log('Selected theme', theme)
-              // Future: persist theme, then navigate to next flow (dashboard?).
               playPlunk()
+              setView(VIEWS.DISTRIBUTION_SELECT)
             }}
             onBack={() => setView(VIEWS.SAAS_SELECT)}
+          />
+          <BoomboxPlayer />
+        </AudioProvider>
+      )
+    case VIEWS.DISTRIBUTION_SELECT:
+      return (
+        <AudioProvider>
+          <CornerLogo onClick={() => setView(VIEWS.LANDING)} />
+          {renderBackToTop}
+          <UserMenu
+            user={user}
+            onSignOut={handleSignOut}
+            playPlunk={playPlunk}
+            onNav={(target) => {
+              if (target === 'setup') return;
+              console.log('Navigate to section:', target)
+            }}
+          />
+          <DistributionSelection
+            playPlunk={playPlunk}
+            onBack={() => setView(VIEWS.THEME_SELECT)}
+            onSelect={(method) => {
+              playPlunk()
+              console.log('Selected distribution method', method)
+              // Future: persist distribution method
+              setView(VIEWS.SCENARIO_SELECT)
+            }}
+          />
+          <BoomboxPlayer />
+        </AudioProvider>
+      )
+    case VIEWS.SCENARIO_SELECT:
+      return (
+        <AudioProvider>
+          <CornerLogo onClick={() => setView(VIEWS.LANDING)} />
+          {renderBackToTop}
+          <UserMenu
+            user={user}
+            onSignOut={handleSignOut}
+            playPlunk={playPlunk}
+            onNav={(target) => {
+              if (target === 'setup') return;
+              console.log('Navigate to section:', target)
+            }}
+          />
+          <ScenarioSelection
+            playPlunk={playPlunk}
+            onBack={() => setView(VIEWS.DISTRIBUTION_SELECT)}
+            onSelect={(scenario) => {
+              playPlunk()
+              console.log('Selected scenario', scenario)
+              // Future: persist scenario & proceed to simulation dashboard
+            }}
           />
           <BoomboxPlayer />
         </AudioProvider>
